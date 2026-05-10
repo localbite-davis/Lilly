@@ -25,6 +25,7 @@ class UserFinalPayload(BaseModel):
     word_confidences: list[WordConf] = []
     started_at_ms: int
     ended_at_ms: int
+    detected_language: str = "en" 
 
 
 class StandingOrderView(BaseModel):

@@ -170,6 +170,7 @@ def build_demo_db(phone: str) -> "MockDB":
             phone=phone,
             first_name="Maria",
             gestational_stage="32 weeks pregnant",
+            language="en",
             has_bp_cuff=True,
             has_wearable=False,
             emergency_contact_name="Rosa",
@@ -177,6 +178,22 @@ def build_demo_db(phone: str) -> "MockDB":
             recent_summaries=["Mild nausea last week, now resolved."],
             standing_orders=[],
             follow_up_flags=["recheck_bp_tomorrow"],
+        ))
+    # Spanish demo patient
+    if phone == "+15550005678":
+        db.seed_patient(MockPatient(
+            patient_id=2,
+            phone=phone,
+            first_name="Sofia",
+            gestational_stage="28 semanas de embarazo",
+            language="es",
+            has_bp_cuff=True,
+            has_wearable=False,
+            emergency_contact_name="Carmen",
+            emergency_contact_phone="+15550008888",
+            recent_summaries=["Náuseas leves la semana pasada, ahora resueltas."],
+            standing_orders=[],
+            follow_up_flags=[],
         ))
     return db
 

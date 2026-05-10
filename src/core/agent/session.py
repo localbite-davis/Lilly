@@ -142,6 +142,8 @@ class ConversationSession:
         self._follow_up_flags: list[str] = []
         self._session_ended: bool = False
         self._consecutive_validation_failures: dict[str, int] = {}
+        self._language: str = settings.default_language   
+        self._language_locked: bool = False
 
         self.tts_stream: TTSStreamLike | None = None
         self._brain_task: asyncio.Task | None = None
@@ -203,6 +205,15 @@ class ConversationSession:
             call_sid=self.call_sid,
             confidence=payload.confidence,
         )
+        # Lock language on first detected turn
+        if not self._language_locked and payload.detected_language:
+            self._language = payload.detected_language
+            self._language_locked = True
+            log.info(
+                "language_detected",
+                call_sid=self.call_sid,
+                language=self._language,
+            )
         self.message_history.append({"role": "user", "content": payload.transcript})
         await self._run_brain_turn()
 
@@ -302,9 +313,14 @@ class ConversationSession:
             self.state = SessionState.THINKING
             loop_start = time.monotonic()
             try:
+                voice_id = (
+                    settings.lily_voice_id_es
+                    if self._language == "es"
+                    else settings.lily_voice_id
+                )
                 self.tts_stream = await self._tts_factory.open_stream(
                     call_sid=self.call_sid,
-                    voice_id=settings.lily_voice_id,
+                    voice_id=voice_id,
                 )
             except Exception as exc:
                 log.error("tts_open_failed", call_sid=self.call_sid, exc_info=exc)
@@ -376,7 +392,10 @@ class ConversationSession:
             async for event in stream_turn(
                 client=self._anthropic,
                 model=settings.lily_model,
-                system=build_system_prompt(self._patient_context or PatientContext(found=False)),
+                system=build_system_prompt(
+                    self._patient_context or PatientContext(found=False),
+                    language=self._language,
+                ),
                 messages=self.message_history,
                 tools=TOOL_DEFINITIONS,
                 max_tokens=settings.brain_max_tokens,

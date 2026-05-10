@@ -52,6 +52,11 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     phi_redaction: bool = True
 
+    # ── Multilingual ──────────────────────────────────────────────────────────
+    supported_languages: list[str] = ["en", "es"]
+    lily_voice_id_es: str = Field(default="")
+    default_language: str = "en"
+
     # ── Latency budgets (ms) ─────────────────────────────────────────────────
     brain_ttft_budget_ms: int = 400
     tts_ttfb_budget_ms: int = 150

@@ -31,6 +31,50 @@ if TYPE_CHECKING:
 log = structlog.get_logger(__name__)
 
 # ---------------------------------------------------------------------------
+# SMS Templates — multilingual
+# ---------------------------------------------------------------------------
+
+SMS_TEMPLATES: dict[str, dict[str, str]] = {
+    "en": {
+        "doctor_review": (
+            "A doctor is reviewing your case. "
+            "Please keep your phone close. We'll call back soon."
+        ),
+        "emergency_contact": (
+            "Your family member needs help right now. "
+            "Emergency services have been contacted."
+        ),
+        "auto_escalate": (
+            "We weren't able to reach a doctor in time. "
+            "Please go to the nearest ER now. "
+            "We're calling ahead to let them know you're coming."
+        ),
+        "call_summary": "Here's a summary of your call with Lily today:",
+    },
+    "es": {
+        "doctor_review": (
+            "Un médico está revisando su caso. "
+            "Por favor mantenga su teléfono cerca. Le llamaremos pronto."
+        ),
+        "emergency_contact": (
+            "Su familiar necesita ayuda ahora mismo. "
+            "Se han contactado los servicios de emergencia."
+        ),
+        "auto_escalate": (
+            "No pudimos comunicarnos con un médico a tiempo. "
+            "Por favor vaya a la sala de emergencias más cercana ahora. "
+            "Estamos llamando para avisarles que va en camino."
+        ),
+        "call_summary": "Aquí hay un resumen de su llamada con Lily hoy:",
+    },
+}
+
+
+def get_sms_template(key: str, language: str = "en") -> str:
+    lang = language if language in SMS_TEMPLATES else "en"
+    return SMS_TEMPLATES[lang].get(key, SMS_TEMPLATES["en"].get(key, ""))
+
+# ---------------------------------------------------------------------------
 # Tool JSON schemas
 # ---------------------------------------------------------------------------
 

@@ -112,14 +112,14 @@ class ElevenLabsSTT:
         self._silence_run = 0
 
         _log(f"flushing {len(audio_bytes)} bytes → ElevenLabs Scribe")
-        text = await self._transcribe(audio_bytes)
+        text, detected_language = await self._transcribe(audio_bytes)
         if text:
-            _log(f"transcript: '{text}'")
-            await self._queue.put(text)
+            _log(f"transcript: '{text}' (language: {detected_language})")
+            await self._queue.put((text, detected_language))
         else:
             _log("empty transcript — skipping")
 
-    async def _transcribe(self, mulaw_bytes: bytes) -> str:
+    async def _transcribe(self, mulaw_bytes: bytes) -> tuple[str, str]:
         wav_bytes = _mulaw_to_wav(mulaw_bytes)
         try:
             async with httpx.AsyncClient(timeout=15) as client:
@@ -127,15 +127,18 @@ class ElevenLabsSTT:
                     _API_URL,
                     headers={"xi-api-key": self._api_key},
                     files={"file": ("audio.wav", wav_bytes, "audio/wav")},
-                    data={"model_id": "scribe_v1", "language_code": "eng"},
+                    data={"model_id": "scribe_v1", "detect_language": True},
                 )
                 if response.status_code != 200:
                     _log(f"Scribe HTTP {response.status_code}: {response.text[:200]}")
-                    return ""
-                return response.json().get("text", "").strip()
+                    return "", "en"
+                data = response.json()
+                text = data.get("text", "").strip()
+                language = data.get("language_code", "en")[:2]
+                return text, language
         except Exception as e:
             _log(f"transcription error: {e!r}")
-            return ""
+            return "", "en"
 
 
 def _mulaw_to_wav(mulaw_bytes: bytes) -> bytes:
