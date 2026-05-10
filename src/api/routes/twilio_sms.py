@@ -2,4 +2,7 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-# TODO: implement SMS webhook
+@router.post("/webhook")
+async def sms_webhook():
+    """Stubbed SMS endpoint to prevent Uvicorn crash."""
+    return {"status": "ok"}

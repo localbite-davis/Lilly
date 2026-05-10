@@ -26,10 +26,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi.staticfiles import StaticFiles
+
 # Include Routers
 app.include_router(twilio_voice.router, prefix="/api/twilio/voice", tags=["Twilio Voice"])
 app.include_router(twilio_sms.router, prefix="/api/twilio/sms", tags=["Twilio SMS"])
 app.include_router(doctor_portal.router, prefix="/api/portal", tags=["Doctor Portal"])
+
+# Mount Person 4's Dashboard UI
+app.mount("/", StaticFiles(directory="dashboard", html=True), name="dashboard")
 
 @app.get("/health")
 def health_check():
