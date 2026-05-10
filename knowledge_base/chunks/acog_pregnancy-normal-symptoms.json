@@ -1,0 +1,23 @@
+[
+  {
+    "id": "acog-normal-edema-feet",
+    "text": "Mild swelling of the feet and ankles, especially at the end of the day or in warm weather, is very common in pregnancy. It happens because your body is holding more fluid and your growing uterus puts pressure on the veins in your legs. Putting your feet up, drinking water, and avoiding standing for long periods can help. This is not a cause for alarm by itself. However, swelling that comes on suddenly, is severe, or is paired with a headache or vision changes should be checked by a clinician right away.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/faqs/preeclampsia-and-high-blood-pressure-during-pregnancy",
+    "topic": "pregnancy normal symptoms",
+    "subtopic": "mild edema and swelling — normal in pregnancy",
+    "gestational_relevance": [
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "edema",
+      "swelling"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]

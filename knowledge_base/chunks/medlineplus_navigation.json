@@ -1,0 +1,23 @@
+[
+  {
+    "id": "usda-wic-enrollment",
+    "text": "WIC is a free federal program that provides healthy food, breastfeeding support, and nutrition counseling for pregnant and postpartum women, infants, and children up to age five. To apply, contact your state or local WIC office. You can find yours at signupwic.com or call 1-800-942-3678. You will need proof of identity, where you live, and your income. If you already get Medicaid, SNAP, or TANF, you usually qualify automatically. Most appointments can be done by phone or video now, especially for postpartum mothers.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/wicwomeninfantsandchildren.html",
+    "topic": "navigation",
+    "subtopic": "WIC enrollment — how to apply",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3",
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "navigate",
+    "tier_signal": "none",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]

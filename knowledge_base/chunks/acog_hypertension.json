@@ -1,0 +1,46 @@
+[
+  {
+    "id": "acog-warning-headache-vision",
+    "text": "A severe headache that does not get better with rest or pain medicine, especially when it comes with changes in your vision like seeing spots, blurriness, or sensitivity to light, can be a sign of preeclampsia. This is a serious condition that needs emergency evaluation right away — do not wait.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/infographics/urgent-maternal-warning-signs",
+    "topic": "hypertension",
+    "subtopic": "preeclampsia warning signs — severe headache and vision changes",
+    "gestational_relevance": [
+      "T2",
+      "T3",
+      "postpartum_early"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_off",
+    "severity": "high",
+    "symptom_tags": [
+      "headache",
+      "vision changes",
+      "blood pressure"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  },
+  {
+    "id": "acog-warning-seizure",
+    "text": "A seizure during pregnancy or in the first weeks after giving birth is an emergency. Call 911 immediately. This can be a sign of eclampsia, which is a severe complication of preeclampsia.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/infographics/urgent-maternal-warning-signs",
+    "topic": "hypertension",
+    "subtopic": "seizure — eclampsia warning sign",
+    "gestational_relevance": [
+      "T2",
+      "T3",
+      "postpartum_early"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_off",
+    "severity": "high",
+    "symptom_tags": [
+      "seizure"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]

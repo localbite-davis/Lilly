@@ -1,0 +1,220 @@
+[
+  {
+    "id": "medlineplus-prenatalcare-000-1d153078",
+    "text": "Prenatal care is the health care you get while you are pregnant . It includes your checkups and prenatal testing . Typically, a health care provider specializing in the delivery of babies and the care of pregnant women, such as an obstetrician or a midwife, provides prenatal care.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "What is prenatal care?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-001-a523ae78",
+    "text": "Prenatal care can help keep you and your fetus healthy until you're ready to deliver your baby . It lets your provider spot health problems early. Early treatment can cure many problems and prevent others from developing. Every prenatal visit offers you the chance to ask questions about having a healthy pregnancy and preparing for delivery. Talk to your provider about childbirth education classes for you and your partner to help you prepare for the birth of your baby.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "Why do I need prenatal care?",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-002-26d4bac3",
+    "text": "Your provider will give you a schedule for your prenatal visits. Usually, visits during your pregnancy occur: Once a month for weeks 4 through 28 Twice a month for weeks 28 through 36 Weekly for week 36 until your baby is born If you are over 35 years old or your pregnancy is high risk because of health problems like diabetes or high blood pressure , your provider will probably want to see you more often. You can also expect to see your provider more often as your due date gets closer.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "How often do I need prenatal visits?",
+    "gestational_relevance": [
+      "T3",
+      "newborn"
+    ],
+    "action_type": "navigate",
+    "tier_signal": "none",
+    "severity": "low",
+    "symptom_tags": [
+      "blood pressure"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-003-9ae23673",
+    "text": "During prenatal visits, your provider will check your health and carefully monitor your pregnancy until you deliver your baby. Your first prenatal visit may take a little longer. Your provider will most likely: Ask about your health history, including prior pregnancies Ask about your family's health history Discuss any health conditions and risk factors that could affect you or your fetus Do a complete physical exam, including a pelvic exam and Pap test Review blood, urine, or other routine prenatal lab tests Check your blood pressure, height, and weight Discuss a healthy amount of weight gain, healthy eating , and prenatal vitamins Figure out your due date (when you are 40 weeks pregnant) During most visits, your provider will most likely: Check your blood pressure and weight gain Measure your abdomen (belly) to check fetal growth once you begin to show Check your hands and feet for swelling Depending on the stage of your pregnancy, you may have additional tests. Always talk to your provider before you start or stop any medicine . Some medicines can harm your fetus. To help keep yourself and your fetus healthy, avoid substances that could be harmful, such as tobacco, alcohol, and drugs. Dept. of Health and Human Services Office on Women's Health",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "What happens during prenatal visits?",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "handle",
+    "severity": "medium",
+    "symptom_tags": [
+      "blood pressure",
+      "swelling"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-004-9b0d0c4e",
+    "text": "About Pre-Pregnancy Care and Prenatal Care (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "What happens during prenatal visits?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-005-37fe0ca4",
+    "text": "Have a Healthy Pregnancy (Office of Disease Prevention and Health Promotion) Also in Spanish Medical Care during Pregnancy (Nemours Foundation) Also in Spanish Pregnancy Check-Ups: Healthy Start for Mom and Baby (National Institutes of Health) Also in Spanish Prenatal Care (Department of Health and Human Services, Office on Women's Health) Also in Spanish Prenatal Care Checkups (March of Dimes Foundation) Also in Spanish What Can I Do to Promote a Healthy Pregnancy? (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish Pregnancy and Nutrition: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "Start Here",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-006-c2b59afc",
+    "text": "Prenatal Care: First Trimester Visits (Mayo Foundation for Medical Education and Research) Prenatal Care: Second Trimester Visits (Mayo Foundation for Medical Education and Research) Prenatal Care: Third Trimester Visits (Mayo Foundation for Medical Education and Research) What Happens during Prenatal Visits? (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-007-1bef488b",
+    "text": "Test Your Pregnancy Knowledge (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "Test Your Knowledge",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-008-e94902fe",
+    "text": "PeriStats (Perinatal Statistics) (March of Dimes Foundation) ClinicalTrials.gov: Prenatal Care (National Institutes of Health)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "Statistics and Research",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-009-38f0f5c0",
+    "text": "Article: Effect of home ultrasound in patients with previous late pregnancy loss:... Article: A cluster-randomised controlled trial evaluating the effects of a blended care... Article: Protocol for a process and implementation evaluation of the SMARThealth pregnancy... Prenatal Care -- see more articles",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "Journal Articles References and abstracts from MEDLINE/PubMed (National Library of Medicine)",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-010-230d6d7b",
+    "text": "Department of Health and Human Services, Office on Women's Health Also in Spanish Eunice Kennedy Shriver National Institute of Child Health and Human Development Also in Spanish How to Find an Ob-Gyn (American College of Obstetricians and Gynecologists) March of Dimes Foundation Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "Find an Expert",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-prenatalcare-011-ba534282",
+    "text": "Pregnancy care (Medical Encyclopedia) Also in Spanish Prenatal care in your first trimester (Medical Encyclopedia) Also in Spanish Prenatal care in your second trimester (Medical Encyclopedia) Also in Spanish Prenatal care in your third trimester (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/prenatalcare.html",
+    "topic": "prenatalcare",
+    "subtopic": "Patient Handouts",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  }
+]

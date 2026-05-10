@@ -1,0 +1,4 @@
+# Treat the persisted ChromaDB SQLite store as binary so git diff doesn't
+# try to render it as text and so merge conflicts on it fail loudly.
+knowledge_base/chroma_db/chroma.sqlite3 binary
+knowledge_base/chroma_db/**/*.bin binary

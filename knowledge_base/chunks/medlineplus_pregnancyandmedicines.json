@@ -1,0 +1,228 @@
+[
+  {
+    "id": "medlineplus-pregnancyandmedicines-000-dfbb9364",
+    "text": "Some medicines are safe to take during pregnancy , but many are not. If you're pregnant, check with your health care provider before taking any medicine. Some medicines can harm your developing fetus . This includes:",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Is it safe to take medicine during pregnancy?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-001-484d5858",
+    "text": "Always talk to your provider before you stop or start any medicine. You may take medicine to treat a health problem you had before pregnancy. Not using the medicine that you need may be more harmful to you and your fetus than using the medicine. For example, many pregnant women take prescription medicines for health problems like diabetes , asthma, seizures, and heartburn. The decision about whether to take a certain medicine should depend on the risks and benefits that go with it. You and your provider should make this choice together.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Should I stop taking my medicine during pregnancy?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_off",
+    "severity": "high",
+    "symptom_tags": [
+      "seizure"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-002-15567a23",
+    "text": "If you're pregnant, you shouldn't take regular vitamins . They may have too much or too little of the vitamins you need. For example, everyone needs folic acid , a type of B vitamin. But if you're trying to get pregnant, it's really important. Getting enough folic acid before and during pregnancy can prevent birth defects of the brain or spine. During your prenatal care visits, your provider will talk about prenatal vitamins. These are a special kind of vitamin to take during pregnancy.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Can I take vitamins during pregnancy?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-003-167eb5ef",
+    "text": "Medicine and Pregnancy (Food and Drug Administration) Also in Spanish Medicine and Pregnancy: An Overview (Centers for Disease Control and Prevention) Pregnancy and Medicines (Department of Health and Human Services, Office on Women's Health)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Start Here",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-004-49d73cdf",
+    "text": "Echinacea and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Prescription Opioids during Pregnancy (March of Dimes Foundation)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Treatments and Therapies",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-005-933b136e",
+    "text": "Allergy Medications and Pregnancy: What's Safe? (Mayo Foundation for Medical Education and Research) Also in Spanish Alternatives for Pregnant Women (Malaria) (Centers for Disease Control and Prevention) Antidepressants: Safe during Pregnancy? (Mayo Foundation for Medical Education and Research) Also in Spanish Bupropion (Wellbutrin) and Pregnancy (Organization of Teratology Information Specialists) - PDF Also in Spanish Citalopram | Escitalopram (Celexa | Lexapro) and Pregnancy (Organization of Teratology Information Specialists) Diethylstilbestrol (DES) Exposure and Cancer (National Cancer Institute) Also in Spanish Etanercept (Enbrel) and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Fluconazole (Diflucan) and Pregnancy (Organization of Teratology Information Specialists) Ibuprofen and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Inhaled Corticosteroids (ICSs) and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Is it Safe to Take Antibiotics During Pregnancy? (Mayo Foundation for Medical Education and Research) Also in Spanish Isotretinoin (Accutane) and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-006-b8ec14f6",
+    "text": "Isotretinoin and Other Retinoids during Pregnancy (March of Dimes Foundation) Also in Spanish Lithium and Pregnancy (Organization of Teratology Information Specialists) - PDF Also in Spanish Metformin and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Montelukast (Singulair) and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Paroxetine (Paxil) and Pregnancy (Organization of Teratology Information Specialists) - PDF Phentermine and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Prednisone/Prednisolone and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Pregnancy and Opioids: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish Pregnancy Constipation: Are Stool Softeners Safe? (Mayo Foundation for Medical Education and Research) Also in Spanish Pseudoephedrine and Pregnancy (Organization of Teratology Information Specialists) - PDF Also in Spanish Sertraline (Zoloft) and Pregnancy (Organization of Teratology Information Specialists) Sulfamethoxazole/Trimethoprim (Bactrim or Septra) and Pregnancy (Organization of Teratology Information Specialists) Tetracycline and Pregnancy (Organization of Teratology Information Specialists)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-007-a65f0537",
+    "text": "Thalidomide and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Topical Acne Treatments and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Trazodone and Pregnancy (Organization of Teratology Information Specialists) Valproic Acid and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Venlafaxine (Effexor) and Pregnancy (Organization of Teratology Information Specialists) Yeast Infection during Pregnancy: Over-the-Counter Treatment OK? (Mayo Foundation for Medical Education and Research) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-008-29540201",
+    "text": "Pregnancy Exposure Registries (Food and Drug Administration) Research on Medicines and Pregnancy (Centers for Disease Control and Prevention)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Statistics and Research",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-009-51728676",
+    "text": "Article: Congenital malformation risk following prenatal antipsychotic exposure: a systematic safety surveillance... Article: Risk of Major Congenital Malformations Associated With the First-Trimester Exposure to... Article: Learning with Patient Campaigners About a German Drug Scandal*. Pregnancy and Medicines -- see more articles",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Journal Articles References and abstracts from MEDLINE/PubMed (National Library of Medicine)",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-010-41645cb4",
+    "text": "Centers for Disease Control and Prevention Also in Spanish Eunice Kennedy Shriver National Institute of Child Health and Human Development Also in Spanish March of Dimes Foundation Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Find an Expert",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancyandmedicines-011-20825d64",
+    "text": "Finasteride and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish Paternal Exposures and Pregnancy (Organization of Teratology Information Specialists) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancyandmedicines.html",
+    "topic": "pregnancyandmedicines",
+    "subtopic": "Men",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  }
+]

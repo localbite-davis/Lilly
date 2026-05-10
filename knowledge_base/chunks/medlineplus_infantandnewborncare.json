@@ -1,0 +1,134 @@
+[
+  {
+    "id": "medlineplus-infantandnewborncare-000-8b8637bf",
+    "text": "Going home with a new baby is exciting, but it can be scary, too. Newborns have many needs, like frequent feedings and diaper changes. Babies can have health issues that are different from older children and adults, like diaper rash and cradle cap. Your baby will go through many changes during the first year of life. You may feel uneasy at first. Ask your health care provider for help if you need it.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/infantandnewborncare.html",
+    "topic": "infantandnewborncare",
+    "subtopic": "For You",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-infantandnewborncare-001-24b07205",
+    "text": "First Day of Life (Nemours Foundation) Also in Spanish Getting to Know Your Newborn (Nemours Foundation) Also in Spanish Guide for First-Time Parents (Nemours Foundation) Also in Spanish Infant Care and Infant Health (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Infants & Toddlers: Raising Healthy Children (Centers for Disease Control and Prevention) Your Newborn's First Week: How to Prepare and What to Expect (American Academy of Pediatrics) Also in Spanish Baby Carriers: Backpacks, Front Packs, and Slings (American Academy of Pediatrics) Also in Spanish Baby Poop: What's Normal? (Mayo Foundation for Medical Education and Research) Also in Spanish Baby's Head Shape: Cause for Concern? (Mayo Foundation for Medical Education and Research) Also in Spanish Car Seat Safety (Nemours Foundation) Choosing Safe Baby Products (Nemours Foundation) Also in Spanish Communication and Your Newborn (Nemours Foundation) Also in Spanish Infant Constipation: How Is It Treated? (Mayo Foundation for Medical Education and Research) Also in Spanish Laundering Your Baby's Clothes (Nemours Foundation) Also in Spanish Pacifiers: Are They Good for Your Baby? (Mayo Foundation for Medical Education and Research) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/infantandnewborncare.html",
+    "topic": "infantandnewborncare",
+    "subtopic": "Start Here",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-infantandnewborncare-002-3e3ec06b",
+    "text": "Safe Sleep -- Cribs and Infant Products (Consumer Product Safety Commission) Also in Spanish When Can I Take My Newborn out in Public? (Nemours Foundation) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/infantandnewborncare.html",
+    "topic": "infantandnewborncare",
+    "subtopic": "Start Here",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-infantandnewborncare-003-846e3673",
+    "text": "Baby Naps: Daytime Sleep Tips (Mayo Foundation for Medical Education and Research) Bed-Sharing (Nemours Foundation) Also in Spanish Burping Your Baby (Nemours Foundation) Also in Spanish Crying and Colic (American Academy of Pediatrics) Also in Spanish Diapering Your Baby (Nemours Foundation) Also in Spanish How to Keep Your Sleeping Baby Safe (American Academy of Pediatrics) Also in Spanish Kids and Sleep (For Parents) (Nemours Foundation) Also in Spanish Skin-to-Skin Contact: How Kangaroo Care Benefits Your Baby (American Academy of Pediatrics) Also in Spanish Spitting up in Babies: What's OK, What's Not (Mayo Foundation for Medical Education and Research) Also in Spanish Tummy Time for a Healthy Baby (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish Uncircumcised Penis: Is Special Care Needed? (Mayo Foundation for Medical Education and Research) Also in Spanish ClinicalTrials.gov: Infant Care (National Institutes of Health)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/infantandnewborncare.html",
+    "topic": "infantandnewborncare",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "navigate",
+    "tier_signal": "none",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-infantandnewborncare-004-dcafa7de",
+    "text": "Article: Effect of Online Infant Care Education Based on Meleis's Transition Theory... Article: Relationship between post-partum mothers' knowledge and essential newborn care practices in... Article: Mapping the implementation of neonatal care guidelines in sub-Saharan Africa: a... Infant and Newborn Care -- see more articles",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/infantandnewborncare.html",
+    "topic": "infantandnewborncare",
+    "subtopic": "Journal Articles References and abstracts from MEDLINE/PubMed (National Library of Medicine)",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-infantandnewborncare-005-1b6ffca9",
+    "text": "Eunice Kennedy Shriver National Institute of Child Health and Human Development Also in Spanish Find a Pediatrician or Pediatric Specialist (American Academy of Pediatrics) Also in Spanish KidsHealth (Nemours Foundation)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/infantandnewborncare.html",
+    "topic": "infantandnewborncare",
+    "subtopic": "Find an Expert",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-infantandnewborncare-006-f2637784",
+    "text": "New Dad: Tips to Help Manage Stress (Mayo Foundation for Medical Education and Research)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/infantandnewborncare.html",
+    "topic": "infantandnewborncare",
+    "subtopic": "Men",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-infantandnewborncare-007-0ee53e3c",
+    "text": "Baby supplies you need (Medical Encyclopedia) Also in Spanish Bathing an infant (Medical Encyclopedia) Also in Spanish Bonding with your newborn (Medical Encyclopedia) Also in Spanish Buying and caring for baby bottles and nipples (Medical Encyclopedia) Also in Spanish Changes in the newborn at birth (Medical Encyclopedia) Also in Spanish Colic and crying - self-care (Medical Encyclopedia) Also in Spanish Cribs and crib safety (Medical Encyclopedia) Also in Spanish Crying in infancy (Medical Encyclopedia) Also in Spanish Infant reflexes (Medical Encyclopedia) Also in Spanish Newborn head molding (Medical Encyclopedia) Also in Spanish Umbilical cord care in newborns (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/infantandnewborncare.html",
+    "topic": "infantandnewborncare",
+    "subtopic": "Patient Handouts",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "self_care",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  }
+]

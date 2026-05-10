@@ -1,0 +1,382 @@
+[
+  {
+    "id": "medlineplus-postpartumdepression-000-e962a428",
+    "text": "Having a baby can be exciting, but it can also be stressful and bring many strong emotions. During the postpartum period, which is the time after you give birth , you may have mood swings, crying spells, or feel anxious. These feelings are common and are often called the postpartum \"baby blues\". The baby blues usually go away within a few days to a week. If your symptoms are more severe and last longer than two weeks, you may have postpartum depression. Postpartum depression is a common but serious mood disorder that can begin anytime within the first year after childbirth. Without treatment, symptoms may make it hard to care for your baby or manage daily tasks.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "What is postpartum depression?",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late",
+      "newborn"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression",
+      "mood"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-001-d12c30e9",
+    "text": "The exact cause is unknown, but postpartum depression likely results from a combination of factors, including: Sudden changes in hormone levels after pregnancy Physical changes , such as dropping thyroid hormone levels Lifestyle factors, such as fatigue, lack of sleep, limited support, or recent stressful events",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "What causes postpartum depression?",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression",
+      "fatigue"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-002-58022551",
+    "text": "Anyone can develop postpartum depression after childbirth. You might be at higher risk if you: Have a history of depression , bipolar disorder , or a family health history of these conditions Had a multiple birth (twins, triplets, or more) Had health problems during pregnancy Had preterm labor or other complications during childbirth Have ever experienced domestic violence Are dealing with financial stress",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Who is at risk for postpartum depression?",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-003-aca0f98e",
+    "text": "Postpartum depression symptoms are more intense and last longer than the baby blues. Feeling sad or empty most of the time Sleeping too much or too little Crying more than usual or for no clear reason Pulling away from family and friends Feeling worried or anxious often Feeling little or no interest in your baby Constant doubts about your ability to care for your baby Thinking of harming yourself or your baby If you have thoughts about suicide , or hurting yourself or your baby get help right away: Call 911 or go to your local emergency room Contact a crisis hotline. In the United States, you can reach the National Suicide and Crisis Lifeline at any time: Call or text 988 Chat online with Lifeline Chat TTY users: Use your preferred relay service or dial 711 then 988 TTY users: Use your preferred relay service or dial 711 then 988 Veterans can contact the Veterans Crisis Line: Call 988, then press 1 Text 838255 Chat online Call your mental health provider or other health care provider Reach out to a loved one or close friend If these symptoms begin during pregnancy and continue after childbirth, it's called perinatal depression. Without treatment, it can affect bonding with your baby and may contribute to feeding or sleeping problems.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "What are the symptoms of postpartum depression?",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late",
+      "newborn"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_up",
+    "severity": "high",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-004-c2399fda",
+    "text": "Very rarely, a new mother may develop postpartum psychosis , a medical emergency. Symptoms may include confusion, hallucinations (seeing or hearing things that aren't real), or dangerous behaviors. Call 911 or go to the nearest emergency room right away if this happens.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "What are the symptoms of postpartum depression?",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_off",
+    "severity": "high",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-005-abd896e1",
+    "text": "Your provider may diagnose postpartum depression using: Screening questions or questionnaires, such as those about your mood, sleep, and thoughts. A clinical evaluation based on your symptoms. Blood tests, if needed, to check for physical conditions such as thyroid disorders, that can cause or worsen depression.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "How is postpartum depression diagnosed?",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression",
+      "mood"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-006-0d7dce20",
+    "text": "If you think you have postpartum depression, talk with your provider. Treatments may include: Medicines, including antidepressants Tell your provider if you are breastfeeding so they can choose the safest treatment options. Along with these treatment options, there are things you can do at home that may help you feel better, such as: Asking for help with caring for the baby and household chores Getting physical activity, such as walking",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "What is the treatment for postpartum depression?",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late",
+      "newborn"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-007-010fc305",
+    "text": "You may be able to lower your risk for postpartum depression by: Talking with your provider during pregnancy about any history of depression Completing recommended screening questionnaires during pregnancy and after birth Getting support from family, friends, or support groups Attending early postpartum checkups so symptoms can be found and treated as soon as possible Dept. of Health and Human Services Office on Women's Health",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Can postpartum depression be prevented?",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-008-c5cb72bb",
+    "text": "Perinatal Depression (National Institute of Mental Health) Also in Spanish Perinatal Depression in Partners: Can Both Parents Get the \"Baby Blues?\" (American Academy of Pediatrics) Postpartum Depression (Nemours Foundation) Also in Spanish Postpartum Depression (Department of Health and Human Services, Office on Women's Health) Also in Spanish Postpartum Depression (Mayo Foundation for Medical Education and Research)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Start Here",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late",
+      "newborn"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-009-0f43f89a",
+    "text": "Postpartum Depression Screening (National Library of Medicine) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Diagnosis and Tests",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-010-0509a557",
+    "text": "Antidepressants: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish Depression Treatment (Centers for Disease Control and Prevention) Psychotherapies (National Institute of Mental Health) Tips for Talking with a Health Care Professional about Postpartum Depression (Department of Health and Human Services, Office on Women's Health) - PDF",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Treatments and Therapies",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-011-efb880a2",
+    "text": "Guide to Identifying Support for Postpartum Depression (Department of Health and Human Services, Office on Women's Health) - PDF Baby Blues after Pregnancy (March of Dimes Foundation) Depression during and after Pregnancy: You Are Not Alone (American Academy of Pediatrics) Also in Spanish Help for Partners and Families (Postpartum Support International) Perinatal Anxiety (Postpartum Support International) Also in Spanish Perinatal/Postpartum Psychosis Help (Postpartum Support International) Postpartum Post-Traumatic Stress Disorder (PTSD) (Postpartum Support International)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Living With",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late",
+      "newborn"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "anxiety",
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-012-49401095",
+    "text": "Information and Resources for Female Military Members and Veterans Experiencing Postpartum Depression (Department of Health and Human Services, Office on Women's Health) - PDF Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "navigate",
+    "tier_signal": "none",
+    "severity": "low",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-013-47832bdf",
+    "text": "Talking Postpartum Depression (Department of Health and Human Services, Office on Women's Health)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Videos and Tutorials",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-014-a5f3c871",
+    "text": "Maternal Postpartum Depressive Symptoms (Federal Interagency Forum on Child and Family Statistics) ClinicalTrials.gov: Depression, Postpartum (National Institutes of Health)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Statistics and Research",
+    "gestational_relevance": [
+      "postpartum_early"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-015-55e199df",
+    "text": "Article: Effects of transversus abdominis and erector spinae plane blocks on postoperative... Article: Effectiveness of a web-based preventive postpartum depression programme in pregnancy, with/without... Article: Enhanced Prenatal Care Models and Postpartum Depression: The EMBRACE Randomized Clinical... Postpartum Depression -- see more articles",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Journal Articles References and abstracts from MEDLINE/PubMed (National Library of Medicine)",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-016-7a180d98",
+    "text": "FindTreatment.gov (Substance Abuse and Mental Health Services Administration) Also in Spanish National Institute of Mental Health Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Find an Expert",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-017-3f6b0601",
+    "text": "Help for Dads (Postpartum Support International)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Men",
+    "gestational_relevance": [
+      "postpartum_early"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-postpartumdepression-018-1366983f",
+    "text": "Postpartum depression (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/postpartumdepression.html",
+    "topic": "postpartumdepression",
+    "subtopic": "Patient Handouts",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  }
+]

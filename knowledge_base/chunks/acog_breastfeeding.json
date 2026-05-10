@@ -1,0 +1,24 @@
+[
+  {
+    "id": "acog-breastfeeding-latch",
+    "text": "Sore nipples and trouble getting your baby to latch are very common in the first weeks of breastfeeding and almost always improve with small adjustments. Make sure your baby's mouth covers as much of the areola as possible, not just the nipple. Bring your baby to your breast, not your breast to your baby. Try different positions like the football hold or laid-back nursing. Use a few drops of your own milk on the nipple after feeding to help it heal. If the pain is severe, you see bleeding cracks, or your baby isn't gaining weight, ask for a lactation consultant — your hospital usually has one for free.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/faqs/breastfeeding-your-baby",
+    "topic": "breastfeeding",
+    "subtopic": "latch problems and sore nipples — self-care",
+    "gestational_relevance": [
+      "postpartum_early",
+      "newborn"
+    ],
+    "action_type": "self_care",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "latch",
+      "nipple pain",
+      "breastfeeding"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]

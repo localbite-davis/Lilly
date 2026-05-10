@@ -1,0 +1,6 @@
+# Knowledge-base ingestion + retrieval extras (additive — install on top of root requirements.txt)
+chromadb>=0.4.22                # PersistentClient + default sentence-transformers embeddings
+beautifulsoup4>=4.12.0          # HTML parsing for MedlinePlus + ACOG scrape
+lxml>=5.0.0                     # faster BS4 parser backend (optional but recommended)
+pymupdf>=1.23.0                 # imported as `fitz` — only needed if ingesting ACOG PDFs
+# requests, anthropic, httpx, pydantic, python-dotenv already in root requirements.txt

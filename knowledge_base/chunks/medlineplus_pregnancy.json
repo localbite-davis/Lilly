@@ -1,0 +1,306 @@
+[
+  {
+    "id": "medlineplus-pregnancy-000-0e7031b4",
+    "text": "You're going to have a baby! It's an exciting time, but it can also feel a bit overwhelming. You may have a lot of questions, including what you can do to give your baby a healthy start. Taking care of your health while you're pregnant will help your fetus develop into a healthy baby. To do that, it's important to: Have regular visits with your health care provider. During prenatal care visits your provider checks your health and carefully monitors your pregnancy until you deliver a healthy baby. And if there are any health problems, your provider can find them early. Getting treatment right away can cure many problems and prevent others. Eat healthy and drink plenty of water. Good nutrition during pregnancy includes eating a variety of: Fruits Vegetables Whole grains Lean meats or other protein sources Low-fat dairy products Lean meats or other protein sources Take prenatal vitamins. During pregnancy, you need higher amounts of certain vitamins and minerals, such as folic acid and iron . Be careful with medicines. Always check with your provider before you start or stop any medicine . This includes over-the-counter medicines and dietary or herbal supplements. Stay active. Physical activity can help you stay strong, feel and sleep better, and prepare your body for birth. Check with your provider about which types of activities are right for you.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "For You",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "handle",
+    "severity": "medium",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-001-8661d71b",
+    "text": "Avoid substances that could hurt your baby , including alcohol, drugs, and tobacco . Your body will keep changing as your fetus develops until your baby is ready to be born. It can be hard to know whether a new symptom is normal or could be a sign of a problem . Check with your provider if something is bothering or worrying you.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "For You",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-002-0f7b1226",
+    "text": "10 Early Signs of Pregnancy (Johns Hopkins Medicine) During Pregnancy (Centers for Disease Control and Prevention) Staying Healthy during Pregnancy (Nemours Foundation) Also in Spanish Week-by-Week Pregnancy Calendar (Nemours Foundation) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Start Here",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-003-67c83f35",
+    "text": "Morning Sickness: Nausea and Vomiting of Pregnancy (American College of Obstetricians and Gynecologists) Symptoms of Pregnancy: What Happens First (Mayo Foundation for Medical Education and Research) Also in Spanish What Are Some Common Signs of Pregnancy? (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Symptoms",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "nausea",
+      "vomiting"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-004-07c764fc",
+    "text": "At-Home Medical Tests (National Library of Medicine) Also in Spanish Pregnancy Test (National Library of Medicine) Also in Spanish Prenatal Testing: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Diagnosis and Tests",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-005-27e1bee1",
+    "text": "Birth Control: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Prevention and Risk Factors",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-006-2ff5182c",
+    "text": "Cosmetics and Pregnancy (Food and Drug Administration) Exercise during Pregnancy (American College of Obstetricians and Gynecologists) Heat and Pregnancy (Environmental Protection Agency) High-Impact Exercising during Pregnancy (Nemours Foundation) Also in Spanish National Maternal Mental Health Hotline (Maternal and Child Health Bureau) Also in Spanish Pregnancy and Nutrition: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish Sex during Pregnancy (Nemours Foundation) Sleeping during Pregnancy (Nemours Foundation) Also in Spanish Staying Healthy and Safe (Department of Health and Human Services, Office on Women's Health) Also in Spanish Stress (Organization of Teratology Information Specialists) - PDF Sunless and Self-Tanning during Pregnancy (Nemours Foundation) Also in Spanish Using Hair Dyes and Color during Pregnancy (Nemours Foundation) Also in Spanish Using Teeth Whiteners during Pregnancy (Nemours Foundation) Also in Spanish Adoption: Considering Your Options and Making a Plan (Children's Bureau) - PDF Health Problems in Pregnancy: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish How Can I Deal with Heartburn during Pregnancy? (Nemours Foundation) Also in Spanish MRI Safety during Pregnancy (American College of Radiology; Radiological Society of North America) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Living With",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-007-8a608860",
+    "text": "Oral Health and Pregnancy (Health Resources and Services Administration) Also in Spanish Partner's Guide to Pregnancy (American College of Obstetricians and Gynecologists) Pregnancy, Breastfeeding, and Bone Health (National Institute of Arthritis and Musculoskeletal and Skin Diseases) Also in Spanish Preventing Birth Defects (Centers for Disease Control and Prevention) Safety Messages for Pregnant, Postpartum, and Breastfeeding People During Natural Disasters and Severe Weather (Centers for Disease Control and Prevention) Vaccines for Pregnant Women (Department of Health and Human Services, Office of Infectious Disease and HIV/AIDS Policy) What to Do When Your Pregnancy Is Unexpected (American Academy of Family Physicians) What to Expect from Your Employer When You're Expecting (Department of Labor)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Living With",
+    "gestational_relevance": [
+      "postpartum_early",
+      "newborn"
+    ],
+    "action_type": "navigate",
+    "tier_signal": "none",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-008-ec143ab1",
+    "text": "Back Pain during Pregnancy: 7 Tips for Relief (Mayo Foundation for Medical Education and Research) Also in Spanish Body Changes and Discomforts (Department of Health and Human Services, Office on Women's Health) Also in Spanish Common Discomforts of Pregnancy (March of Dimes Foundation) Common Skin Conditions during Pregnancy (American Academy of Family Physicians) Having Kids Later in Life: Healthy Pregnancies as You Age (National Institutes of Health) Also in Spanish Headaches during Pregnancy: What's the Best Treatment? (Mayo Foundation for Medical Education and Research) Also in Spanish How Your Fetus Grows during Pregnancy (American College of Obstetricians and Gynecologists) Multiple Pregnancy (American College of Obstetricians and Gynecologists) Pregnancy and Your Heart Health (National Heart, Lung, and Blood Institute) - PDF Also in Spanish Pregnancy for Every Body (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish Stages of Pregnancy (Department of Health and Human Services, Office on Women's Health) Also in Spanish Travel during Pregnancy (American College of Obstetricians and Gynecologists)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "back pain",
+      "headache"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-009-45d2d4a9",
+    "text": "Cell division (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Videos and Tutorials",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-010-a291970f",
+    "text": "Morning Sickness Myths & Facts Quiz (Medical Encyclopedia) Also in Spanish ClinicalTrials.gov: Pregnancy (National Institutes of Health)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Test Your Knowledge",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-011-50f106c8",
+    "text": "Article: Weight and body image during pregnancy: a qualitative study of the... Article: A Rational Approach to Pharmacotherapy in Pregnancy. Article: Placental intervillous blood harbors NK cells with distinct tissue-resident characteristics.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Journal Articles References and abstracts from MEDLINE/PubMed (National Library of Medicine)",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-012-a1dfca60",
+    "text": "Female Reproductive System (Nemours Foundation) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Reference Desk",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-013-1c0a8da6",
+    "text": "American College of Obstetricians and Gynecologists Department of Health and Human Services, Office on Women's Health Also in Spanish Eunice Kennedy Shriver National Institute of Child Health and Human Development Also in Spanish How to Find an Ob-Gyn (American College of Obstetricians and Gynecologists) March of Dimes Foundation Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Find an Expert",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-014-d519127c",
+    "text": "Preparing Your Child for a New Sibling (Nemours Foundation)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Children",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-015-08b7b8ca",
+    "text": "Teenage Pregnancy: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Teenagers",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-pregnancy-016-573be1de",
+    "text": "Aches and pains during pregnancy (Medical Encyclopedia) Also in Spanish Common symptoms during pregnancy (Medical Encyclopedia) Also in Spanish HCG blood test - qualitative (Medical Encyclopedia) Also in Spanish Morning sickness (Medical Encyclopedia) Also in Spanish Pregnancy and travel (Medical Encyclopedia) Also in Spanish Pregnancy and work (Medical Encyclopedia) Also in Spanish Problems sleeping during pregnancy (Medical Encyclopedia) Also in Spanish Skin and hair changes during pregnancy (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy",
+    "subtopic": "Patient Handouts",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  }
+]
