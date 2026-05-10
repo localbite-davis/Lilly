@@ -16,13 +16,14 @@ deepgram-sdk>=3.2.0
 websockets>=12.0                 # used directly for ElevenLabs streaming WS
 
 # ── Memory / Vector store ────────────────────────────────────────────────────
-pinecone>=3.0.0                  # new package name (was pinecone-client)
-langchain-openai>=0.1.0          # OpenAIEmbeddings used in vector_store.py
-openai>=1.3.5                    # transitive dep of langchain-openai
+pinecone>=3.0.0                  # Pinecone vector DB
+openai>=1.3.5                    # OpenAI embeddings for Pinecone
 
 # ── Database ─────────────────────────────────────────────────────────────────
-SQLAlchemy==2.0.23
-psycopg2-binary==2.9.9
+SQLAlchemy>=2.0.23
+asyncpg>=0.29.0                  # async PostgreSQL driver for NeonDB
+psycopg2-binary>=2.9.9           # sync driver for FastAPI legacy routes
+aiosqlite>=0.20.0                # async SQLite for local dev without Postgres
 
 # ── Background tasks ─────────────────────────────────────────────────────────
 celery==5.3.4
