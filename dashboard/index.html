@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lily — Doctor Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:#f5f5f3;display:grid;grid-template-columns:210px 1fr;min-height:100vh}
+  .sidebar{background:#fff;border-right:1px solid #e8e8e8;padding:1.5rem 1rem;display:flex;flex-direction:column;gap:4px}
+  .logo{font-size:20px;font-weight:500;color:#0F6E56;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
+  .logo small{display:block;font-size:11px;color:#aaa;font-weight:400}
+  .nav{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;font-size:13px;color:#888;cursor:pointer}
+  .nav.active{background:#E1F5EE;color:#0F6E56;font-weight:500}
+  .nav:hover:not(.active){background:#f5f5f3}
+  .sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid #f0f0f0;font-size:12px;color:#aaa}
+  .main{padding:1.5rem;display:flex;flex-direction:column;gap:1rem}
+  .topbar{display:flex;align-items:center;justify-content:space-between}
+  .topbar h1{font-size:18px;font-weight:500}
+  .live-badge{font-size:11px;background:#E1F5EE;color:#0F6E56;padding:4px 10px;border-radius:99px;display:flex;align-items:center;gap:6px}
+  .live-dot{width:6px;height:6px;background:#1D9E75;border-radius:50%;animation:blink 1.5s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .stat{background:#fff;border:1px solid #efefef;border-radius:12px;padding:1rem 1.25rem}
+  .stat-label{font-size:11px;color:#aaa;margin-bottom:4px}
+  .stat-val{font-size:26px;font-weight:500}
+  .stat-sub{font-size:11px;color:#bbb;margin-top:2px}
+  .queue{display:flex;flex-direction:column;gap:12px}
+  .card{background:#fff;border:1px solid #efefef;border-radius:12px;padding:1.25rem;display:grid;grid-template-columns:1fr 90px;gap:1rem;transition:opacity .3s}
+  .card.resolved{opacity:.35;pointer-events:none}
+  .card.tier-hand_off{border-left:3px solid #E24B4A}
+  .card.tier-hand_up{border-left:3px solid #EF9F27}
+  .card.tier-handle{border-left:3px solid #1D9E75}
+  .card-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+  .av-red{background:#FCEBEB;color:#A32D2D}
+  .av-amber{background:#FAEEDA;color:#854F0B}
+  .av-teal{background:#E1F5EE;color:#0F6E56}
+  .pname{font-size:15px;font-weight:500}
+  .pmeta{font-size:12px;color:#999}
+  .tier-pill{margin-left:auto;font-size:11px;font-weight:500;padding:3px 10px;border-radius:99px}
+  .pill-hand_off{background:#FCEBEB;color:#A32D2D}
+  .pill-hand_up{background:#FAEEDA;color:#854F0B}
+  .pill-handle{background:#E1F5EE;color:#0F6E56}
+  .vitals-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:12px}
+  .vl{font-size:11px;color:#aaa;margin-bottom:3px}
+  .vv{font-family:'DM Mono',monospace;font-size:14px;color:#222}
+  .vv.alert{color:#A32D2D;font-weight:500}
+  .symptoms{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+  .sym{font-size:11px;background:#f5f5f3;border:1px solid #e8e8e8;padding:2px 8px;border-radius:99px;color:#666}
+  .sbar{background:#fafafa;border-left:2px solid #ddd;border-radius:0 6px 6px 0;padding:10px 12px;font-size:12px;color:#666;line-height:1.7;margin-bottom:12px}
+  .note-input{width:100%;font-size:13px;border:1px solid #e0e0e0;border-radius:8px;padding:8px 10px;font-family:'DM Sans',sans-serif;resize:none;margin-bottom:10px;outline:none}
+  .note-input:focus{border-color:#1D9E75}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{font-size:12px;font-weight:500;padding:7px 13px;border-radius:8px;border:1px solid;cursor:pointer;font-family:'DM Sans',sans-serif}
+  .btn:hover{filter:brightness(.95)}
+  .btn:active{transform:scale(.97)}
+  .btn-approve{background:#E1F5EE;color:#0F6E56;border-color:#9FE1CB}
+  .btn-escalate{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
+  .btn-note{background:#f5f5f3;color:#666;border-color:#ddd}
+  .timer-col{display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;padding-top:4px;gap:4px}
+  .timer{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:#222;text-align:right}
+  .timer.urgent{color:#A32D2D}
+  .timer-label{font-size:11px;color:#aaa;text-align:right}
+  .auto-warn{font-size:11px;color:#A32D2D;text-align:right}
+  .lily-ok{font-size:12px;color:#0F6E56;text-align:right;line-height:1.6}
+  .so-box{background:#fff;border:1px solid #efefef;border-radius:12px;padding:1.25rem}
+  .so-title{font-size:15px;font-weight:500;margin-bottom:1rem}
+  .so-form{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:flex-end;margin-bottom:12px}
+  .form-group label{font-size:11px;color:#aaa;display:block;margin-bottom:4px}
+  .form-group input,.form-group select{width:100%;font-size:13px;padding:7px 10px;border:1px solid #e0e0e0;border-radius:8px;font-family:'DM Sans',sans-serif;outline:none}
+  .form-group input:focus{border-color:#1D9E75}
+  .so-list{display:flex;flex-direction:column;gap:6px}
+  .so-item{font-size:12px;background:#f5f5f3;padding:7px 10px;border-radius:8px;color:#555}
+  #toast{position:fixed;bottom:24px;right:24px;background:#0F6E56;color:#fff;font-size:13px;padding:10px 18px;border-radius:8px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+  #toast.show{opacity:1}
+  .empty{text-align:center;padding:3rem;color:#bbb;font-size:14px}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">🌸 <div>Lily<small>Doctor Portal</small></div></div>
+  <div class="nav active">📋 Case queue</div>
+  <div class="nav">🕐 Past cases</div>
+  <div class="nav">📄 Standing orders</div>
+  <div class="nav">📊 Analytics</div>
+  <div class="sidebar-footer">Dr. Demo · On call</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <h1>Case queue</h1>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="live-badge"><span class="live-dot"></span>Live · auto-refresh 15s</span>
+      <span style="font-size:12px;color:#aaa" id="last-refresh"></span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Active cases</div>
+      <div class="stat-val" id="s-active">3</div>
+      <div class="stat-sub">awaiting review</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Hand-off</div>
+      <div class="stat-val" style="color:#A32D2D" id="s-handoff">1</div>
+      <div class="stat-sub">emergency tier</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Hand-up</div>
+      <div class="stat-val" style="color:#854F0B" id="s-handup">1</div>
+      <div class="stat-sub">needs review</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Resolved today</div>
+      <div class="stat-val" id="s-resolved">7</div>
+      <div class="stat-sub">avg response 11m</div>
+    </div>
+  </div>
+
+  <div class="queue" id="queue"></div>
+
+  <div class="so-box">
+    <div class="so-title">📋 Create standing order</div>
+    <div class="so-form">
+      <div class="form-group">
+        <label>Patient</label>
+        <select id="so-patient">
+          <option>Maria G. · 32 weeks</option>
+          <option>Denise H. · 28 weeks</option>
+          <option>Keisha T. · 6w postpartum</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Condition trigger</label>
+        <input type="text" id="so-cond" placeholder="e.g. BP > 140/90">
+      </div>
+      <div class="form-group">
+        <label>Intervention</label>
+        <input type="text" id="so-int" placeholder="e.g. Call immediately">
+      </div>
+      <button class="btn btn-approve" onclick="saveOrder()" style="white-space:nowrap;height:36px">Save order</button>
+    </div>
+    <div class="so-list" id="so-list">
+      <div class="so-item">✓ <strong>Maria G. · 32 weeks</strong> · BP > 140/90 → Call immediately</div>
+    </div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script>
+const BASE = 'http://localhost:8000/api/portal';
+
+const MOCK = [
+  { id:1, patient_name:'Maria G.', initials:'MG', av:'av-red', stage:'32 weeks', tier:'hand_off',
+    bp:'162/110', hr:'104', spo2:'97%', bp_alert:true,
+    symptoms:['severe headache','vision changes','upper abdominal pain'],
+    sbar:'S: Maria, 32w, severe headache (8/10) + vision changes x2h. B: HTN at 28w, on labetalol. A: BP 162/110 twice — ACOG critical threshold met. R: Immediate L&D transfer.',
+    timer:null },
+  { id:2, patient_name:'Denise H.', initials:'DH', av:'av-amber', stage:'28 weeks', tier:'hand_up',
+    bp:'148/94', hr:'88', spo2:'98%', bp_alert:false,
+    symptoms:['persistent headache','mild swelling','fatigue'],
+    sbar:'S: Denise, 28w, BP 148/94 + headache x6h. B: No prior HTN. BP cuff at home. A: Two-symptom cluster meets ACOG hand-up threshold. R: Doctor review within 20 minutes.',
+    timer:847 },
+  { id:3, patient_name:'Keisha T.', initials:'KT', av:'av-teal', stage:'6w postpartum', tier:'handle',
+    bp:'118/76', hr:'72', spo2:'99%', bp_alert:false,
+    symptoms:['breastfeeding pain','sleep concerns'],
+    sbar:'S: Keisha, 6w postpartum, latch difficulty + nipple soreness. B: First-time mother, vaginal birth. A: No red flags. R: Lily managing — no escalation needed.',
+    timer:null }
+];
+
+let cases = JSON.parse(JSON.stringify(MOCK));
+let resolved = new Set();
+let resolvedCount = 7;
+let timers = {};
+
+async function loadQueue() {
+  try {
+    const r = await fetch(BASE + '/queue', {signal: AbortSignal.timeout(2000)});
+    if (r.ok) cases = await r.json();
+  } catch(_) {}
+  render();
+  updateStats();
+  document.getElementById('last-refresh').textContent =
+    'Last refresh ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+
+function fmt(s) {
+  return Math.floor(s/60) + ':' + (s%60).toString().padStart(2,'0');
+}
+
+function render() {
+  const q = document.getElementById('queue');
+  const active = cases.filter(c => !resolved.has(c.id));
+  if (!active.length) { q.innerHTML = '<div class="empty">✓ Queue is clear — no active cases</div>'; return; }
+  q.innerHTML = active.map(c => {
+    if (timers[c.id] === undefined && c.timer !== null) timers[c.id] = c.timer;
+    const t = timers[c.id] ?? null;
+    const urgent = t !== null && t < 300;
+    const tierLabel = {hand_off:'🔴 Hand-off', hand_up:'🟡 Hand-up', handle:'🟢 Handle'}[c.tier];
+    return `
+    <div class="card tier-${c.tier}" id="card-${c.id}">
+      <div>
+        <div class="card-top">
+          <div class="avatar ${c.av || 'av-teal'}">${c.initials || c.patient_name.slice(0,2).toUpperCase()}</div>
+          <div><div class="pname">${c.patient_name}</div><div class="pmeta">${c.stage || c.gestational_stage || ''}</div></div>
+          <span class="tier-pill pill-${c.tier}">${tierLabel}</span>
+        </div>
+        <div class="vitals-grid">
+          <div>
+            <div class="vl">Blood pressure</div>
+            <div class="vv ${c.bp_alert ? 'alert' : ''}">${c.bp}</div>
+            <div class="vl" style="margin-top:8px">Heart rate · SpO₂</div>
+            <div class="vv">${c.hr} bpm · ${c.spo2}</div>
+          </div>
+          <div>
+            <div class="vl">Reported symptoms</div>
+            <div class="symptoms">${(c.symptoms||[]).map(s=>`<span class="sym">${s}</span>`).join('')}</div>
+          </div>
+        </div>
+        <div class="sbar">${c.sbar}</div>
+        <textarea class="note-input" id="note-${c.id}" rows="2" placeholder="Add a note for ${c.patient_name}'s record..."></textarea>
+        <div class="actions">
+          <button class="btn btn-approve"  onclick="doAction(${c.id},'approve')">✓ Approve</button>
+          <button class="btn btn-escalate" onclick="doAction(${c.id},'escalate')">🚨 Escalate to L&D</button>
+          <button class="btn btn-note"     onclick="doAction(${c.id},'note')">💬 Send note</button>
+        </div>
+      </div>
+      <div class="timer-col">
+        ${t !== null
+          ? `<div class="timer${urgent?' urgent':''}" id="tmr-${c.id}">${fmt(t)}</div>
+             <div class="timer-label">SLA remaining</div>
+             ${urgent ? '<div class="auto-warn">⚠ Auto-escalating soon</div>' : ''}`
+          : `<div class="lily-ok">✓ Lily<br>managing</div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats() {
+  const active = cases.filter(c => !resolved.has(c.id));
+  document.getElementById('s-active').textContent = active.length;
+  document.getElementById('s-handoff').textContent = active.filter(c=>c.tier==='hand_off').length;
+  document.getElementById('s-handup').textContent  = active.filter(c=>c.tier==='hand_up').length;
+  document.getElementById('s-resolved').textContent = resolvedCount;
+}
+
+async function doAction(id, type) {
+  const c = cases.find(x => x.id === id);
+  const note = (document.getElementById('note-'+id)||{}).value || '';
+  if (type === 'note' && !note.trim()) { showToast('Please write a note first.'); return; }
+  try {
+    await fetch(`${BASE}/cases/${id}/${type}`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({note})
+    });
+  } catch(_) {}
+  if (type !== 'note') {
+    resolved.add(id); resolvedCount++;
+    showToast(type === 'approve'
+      ? `✓ ${c.patient_name} approved. Lily will call her back.`
+      : `🚨 Escalating ${c.patient_name} to L&D. Lily staying on the line.`);
+  } else {
+    showToast(`💬 Note sent to ${c.patient_name}'s record.`);
+  }
+  render(); updateStats();
+}
+
+function saveOrder() {
+  const p = document.getElementById('so-patient').value;
+  const cond = document.getElementById('so-cond').value.trim();
+  const intv = document.getElementById('so-int').value.trim();
+  if (!cond || !intv) { showToast('Fill in both fields.'); return; }
+  const d = document.createElement('div');
+  d.className = 'so-item';
+  d.innerHTML = `✓ <strong>${p}</strong> · ${cond} → ${intv}`;
+  document.getElementById('so-list').appendChild(d);
+  document.getElementById('so-cond').value = '';
+  document.getElementById('so-int').value = '';
+  showToast('Standing order saved.');
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// countdown tick
+setInterval(() => {
+  Object.keys(timers).forEach(id => {
+    if (resolved.has(+id) || timers[id] <= 0) return;
+    timers[id]--;
+    const el = document.getElementById('tmr-'+id);
+    if (el) { el.textContent = fmt(timers[id]); if (timers[id] < 300) el.classList.add('urgent'); }
+  });
+}, 1000);
+
+setInterval(loadQueue, 15000);
+loadQueue();
+</script>
+</body>
+</html>
