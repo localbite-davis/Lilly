@@ -7,7 +7,7 @@ class DoctorQueue(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
-    encounter_id = Column(Integer, ForeignKey("encounters.id"), nullable=False)
+    encounter_id = Column(Integer, ForeignKey("conversations.id"), nullable=False)
     
     # Case details
     symptoms = Column(Text, nullable=False)
