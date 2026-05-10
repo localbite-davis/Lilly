@@ -129,12 +129,16 @@ async def run_case(client: Anthropic, case: dict, verbose: bool) -> bool:
     reply_lower = reply.lower()
     keyword_ok = (not must_contain) or any(kw in reply_lower for kw in must_contain)
 
-    print(f"  RAG injection:    {meta['rag_used']!s:<5} (expected {expect_rag!s:<5}) {_tick(rag_ok)}")
+    actions_str = ", ".join(actions) if actions else "[]"
+    matched = [kw for kw in must_contain if kw in reply_lower] if must_contain else []
+    matched_str = ", ".join(matched) if matched else "(none)"
+    must_preview = ", ".join(must_contain[:4]) + ("..." if len(must_contain) > 4 else "")
+
+    print(f"  RAG injection:    {str(meta['rag_used']):<5} (expected {str(expect_rag):<5}) {_tick(rag_ok)}")
     if expected_actions:
-        print(f"  action_type:      {actions if actions else '[]':<30} (expected one of {expected_actions}) {_tick(action_ok)}")
+        print(f"  action_type:      {actions_str:<30} (expected one of {expected_actions}) {_tick(action_ok)}")
     if must_contain:
-        matched = [kw for kw in must_contain if kw in reply_lower]
-        print(f"  reply contains:   {matched or '(none)':<30} (any of {must_contain[:4]}{'...' if len(must_contain) > 4 else ''}) {_tick(keyword_ok)}")
+        print(f"  reply contains:   {matched_str:<30} (any of [{must_preview}]) {_tick(keyword_ok)}")
 
     if verbose or not (rag_ok and action_ok and keyword_ok):
         print(f"  {DIM}lily ▸{NC} {reply}")
