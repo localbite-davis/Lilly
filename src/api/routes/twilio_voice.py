@@ -131,6 +131,11 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 transcript, detected_language = item
 
+                # Pin Scribe to the caller's language once it's locked — stops
+                # wrong-script transcriptions on 8kHz phone audio.
+                if session and session._language_locked and stt:
+                    stt.pin_language(session._language)
+
                 # Drop echo that slipped through mute: after language lock,
                 # short transcripts in a different language are almost always
                 # Lily's own TTS voice being picked up through the phone.
@@ -138,7 +143,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     session
                     and session._language_locked
                     and detected_language != session._language
-                    and len(transcript.split()) < 5
+                    and len(transcript.split()) < 8
                 ):
                     _log(f"dropping echo [{detected_language}]: '{transcript[:60]}'")
                     continue

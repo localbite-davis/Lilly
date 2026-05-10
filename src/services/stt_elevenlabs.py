@@ -51,6 +51,9 @@ class ElevenLabsSTT:
         # end_mute(duration) is called when TTS closes with the actual playback
         # duration + buffer so echo tail is also suppressed.
         self._muted_until: float = 0.0
+        # When set, Scribe is told to use this language instead of auto-detecting.
+        # Eliminates wrong-script transcriptions once the caller's language is known.
+        self._pinned_language: str | None = None
 
     def start_mute(self) -> None:
         """Mute indefinitely — call when TTS stream opens."""
@@ -62,6 +65,12 @@ class ElevenLabsSTT:
     def end_mute(self, tail_s: float) -> None:
         """Lift mute after tail_s seconds — call when TTS stream closes."""
         self._muted_until = time.monotonic() + tail_s
+
+    def pin_language(self, lang_code: str) -> None:
+        """Lock Scribe to a specific language — stops wrong-script transcriptions."""
+        if self._pinned_language != lang_code:
+            self._pinned_language = lang_code
+            _log(f"language pinned to '{lang_code}' — disabling auto-detection")
 
     async def connect(self):
         pass  # REST — no persistent connection needed
@@ -125,10 +134,16 @@ class ElevenLabsSTT:
         if not text:
             _log("empty transcript — skipping")
             return
+        # Scribe wraps non-speech sounds in parentheses: (Upbeat music plays),
+        # (laughter), etc. Drop these — they are never patient speech.
+        stripped = text.strip()
+        if stripped.startswith("(") and stripped.endswith(")"):
+            _log(f"discarding non-speech annotation: '{text}'")
+            return
         # Discard noise: single words / very short strings are almost always
         # echo bleed, background noise, or a mulaw artefact — not real speech.
-        if len(text.strip()) < 8 or len(text.split()) < 2:
-            _log(f"discarding noise ({len(text.split())} word(s)): '{text}'")
+        if len(stripped) < 8 or len(stripped.split()) < 2:
+            _log(f"discarding noise ({len(stripped.split())} word(s)): '{text}'")
             return
         _log(f"transcript: '{text}' (language: {detected_language})")
         await self._queue.put((text, detected_language))
@@ -137,11 +152,15 @@ class ElevenLabsSTT:
         wav_bytes = _mulaw_to_wav(mulaw_bytes)
         try:
             async with httpx.AsyncClient(timeout=15) as client:
+                if self._pinned_language:
+                    scribe_data = {"model_id": "scribe_v1", "language_code": self._pinned_language}
+                else:
+                    scribe_data = {"model_id": "scribe_v1", "detect_language": True}
                 response = await client.post(
                     _API_URL,
                     headers={"xi-api-key": self._api_key},
                     files={"file": ("audio.wav", wav_bytes, "audio/wav")},
-                    data={"model_id": "scribe_v1", "detect_language": True},
+                    data=scribe_data,
                 )
                 if response.status_code != 200:
                     _log(f"Scribe HTTP {response.status_code}: {response.text[:200]}")
