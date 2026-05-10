@@ -10,7 +10,8 @@ twilio==8.10.2
 anthropic>=0.40.0
 
 # ── Speech (STT + TTS via ElevenLabs) ───────────────────────────────────────
-websockets>=12.0                 # used directly for ElevenLabs STT + TTS WebSocket streams
+websockets>=12.0                 # ElevenLabs TTS WebSocket stream
+httpx>=0.27.0                    # ElevenLabs STT REST API (async)
 
 # ── Memory / Vector store ────────────────────────────────────────────────────
 pinecone>=3.0.0                  # new package name (was pinecone-client)

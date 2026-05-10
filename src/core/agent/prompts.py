@@ -22,7 +22,7 @@ Previous Call Summary: {memory_summary}
 EXTRACT_SYMPTOMS_TOOL = {
     "name": "extract_symptoms",
     "description": "Call this tool whenever the user mentions physical symptoms or provides vital signs like blood pressure.",
-    "parameters": {
+    "input_schema": {
         "type": "object",
         "properties": {
             "symptoms": {
