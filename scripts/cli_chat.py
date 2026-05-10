@@ -29,6 +29,21 @@ log = structlog.get_logger("cli_chat")
 
 
 # ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _serialize_block(block) -> dict:
+    t = getattr(block, "type", None)
+    if t == "text":
+        return {"type": "text", "text": block.text}
+    if t == "tool_use":
+        return {"type": "tool_use", "id": block.id, "name": block.name, "input": block.input}
+    if t == "tool_result":
+        return {"type": "tool_result", "tool_use_id": block.tool_use_id, "content": block.content}
+    return {"type": "text", "text": str(block)}
+
+
+# ---------------------------------------------------------------------------
 # Real Anthropic client wrapper (implementing AnthropicLike)
 # ---------------------------------------------------------------------------
 
@@ -100,10 +115,7 @@ class RealAnthropicClient:
                     msg = await stream.get_final_message()
                     assistant_msg = {
                         "role": "assistant",
-                        "content": [
-                            block.model_dump() if hasattr(block, "model_dump") else {"type": "text", "text": str(block)}
-                            for block in msg.content
-                        ],
+                        "content": [_serialize_block(b) for b in msg.content],
                     }
                     yield MessageStop(
                         stop_reason=msg.stop_reason or "end_turn",
