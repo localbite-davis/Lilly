@@ -26,10 +26,13 @@ from twilio.twiml.voice_response import VoiceResponse, Connect
 from src.core.agent.real_client import RealAnthropicClient
 from src.core.agent.session import ConversationSession
 from src.core.schemas import UserFinalPayload
+from src.config import settings
 from src.core.triage.rules_engine import classify_case
 from src.db.real_db import RealDB
 from src.services.stt_elevenlabs import ElevenLabsSTT
 from src.services.tts_elevenlabs import ElevenLabsTTSFactory
+
+_SUPPORTED_LANGUAGES = frozenset(settings.supported_languages)  # {"en", "es"}
 
 router = APIRouter()
 
@@ -130,6 +133,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     continue
 
                 transcript, detected_language = item
+
+                # Scribe misfires on 8kHz mulaw — produces Punjabi/Bengali/etc.
+                # for English speech. Lily only supports en/es; any other detected
+                # language is almost certainly a wrong-script misfire, not a real
+                # language switch.
+                if detected_language not in _SUPPORTED_LANGUAGES:
+                    _log(f"unsupported language '{detected_language}' → en (Scribe misfire)")
+                    detected_language = "en"
 
                 # Pin Scribe to the caller's language once it's locked — stops
                 # wrong-script transcriptions on 8kHz phone audio.

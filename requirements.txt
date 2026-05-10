@@ -12,6 +12,7 @@ anthropic>=0.40.0
 # ── Speech (STT + TTS via ElevenLabs) ───────────────────────────────────────
 websockets>=12.0                 # ElevenLabs TTS WebSocket stream
 httpx>=0.27.0                    # ElevenLabs STT REST API (async)
+webrtcvad>=2.0.10                # Google WebRTC VAD — replaces energy-based RMS thresholding
 
 # ── Memory / Vector store ────────────────────────────────────────────────────
 pinecone>=3.0.0                  # Pinecone vector DB + native inference embeddings

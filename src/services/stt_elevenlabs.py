@@ -7,6 +7,7 @@ import time
 import wave
 
 import httpx
+import webrtcvad
 
 
 def _log(msg: str):
@@ -15,13 +16,12 @@ def _log(msg: str):
 
 _API_URL = "https://api.elevenlabs.io/v1/speech-to-text"
 
-# RMS amplitude threshold to distinguish speech from background silence.
-_SPEECH_THRESHOLD = 1500
+# Aggressiveness 1 — captures quiet speech onset reliably; mode 2+ misses
+# the first frames of a new utterance on 8kHz phone audio.
+_VAD = webrtcvad.Vad(1)
 
-# Number of CONSECUTIVE below-threshold frames before we flush. At 20ms
-# per frame, 35 frames = 700ms of continuous silence. Single loud blips
-# (crackle, breath) don't reset the silence run, so this is robust against
-# noisy environments.
+# Number of CONSECUTIVE non-speech frames before we flush. At 20ms per frame,
+# 35 frames = 700ms of continuous silence.
 _SILENCE_FRAMES = 35
 
 # Don't bother transcribing clips shorter than this (just noise).
@@ -33,9 +33,9 @@ _MAX_BUFFER_BYTES = 96000  # ~12s of mulaw 8kHz
 
 class ElevenLabsSTT:
     """
-    Buffers inbound mulaw audio from Twilio. Uses energy-based VAD to
-    distinguish speech from silence — the silence timer only counts down
-    after real speech, so continuous background audio never blocks it.
+    Buffers inbound mulaw audio from Twilio. Uses WebRTC VAD to distinguish
+    speech from background noise — the silence timer only counts down after
+    real speech, so continuous background audio never blocks it.
     """
 
     def __init__(self, transcript_queue: asyncio.Queue):
@@ -45,7 +45,6 @@ class ElevenLabsSTT:
         self._had_speech = False
         self._silence_run = 0
         self._chunks_seen = 0
-        self._max_rms = 0
         # Echo-cancellation guard: ignore inbound audio while Lily is speaking.
         # start_mute() is called when TTS opens (mutes immediately).
         # end_mute(duration) is called when TTS closes with the actual playback
@@ -86,15 +85,16 @@ class ElevenLabsSTT:
             return
 
         pcm = audioop.ulaw2lin(audio, 2)
-        rms = audioop.rms(pcm, 2)
-        is_speech = rms > _SPEECH_THRESHOLD
+        try:
+            is_speech = _VAD.is_speech(pcm, 8000)
+        except Exception:
+            # Non-standard frame size or VAD error — treat as speech (safe fallback)
+            is_speech = True
 
         # Diagnostic — every ~2s
         self._chunks_seen += 1
-        self._max_rms = max(self._max_rms, rms)
         if self._chunks_seen % 100 == 0:
-            _log(f"stats — max RMS={self._max_rms} (threshold={_SPEECH_THRESHOLD}), buffered={len(self._buffer)}, silence_run={self._silence_run}")
-            self._max_rms = 0
+            _log(f"stats — buffered={len(self._buffer)}, silence_run={self._silence_run}")
 
         if is_speech:
             self._buffer.extend(audio)
@@ -145,6 +145,15 @@ class ElevenLabsSTT:
         if len(stripped) < 8 or len(stripped.split()) < 2:
             _log(f"discarding noise ({len(stripped.split())} word(s)): '{text}'")
             return
+        # Low-diversity transcripts (e.g. "I I I I I" → "ਆਇ ਆਇ ਆਇ ਆਇ ਆਇ") cause
+        # Scribe to misfire on a non-English script over 8kHz phone audio.
+        # If the transcript is a single unique word repeated, don't trust the
+        # language detection — return "en" so the session lock stays correct.
+        words = stripped.split()
+        unique_words = {w.lower() for w in words}
+        if len(unique_words) == 1 and detected_language != "en":
+            _log(f"single-word transcript, overriding '{detected_language}' → 'en'")
+            detected_language = "en"
         _log(f"transcript: '{text}' (language: {detected_language})")
         await self._queue.put((text, detected_language))
 

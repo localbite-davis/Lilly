@@ -60,13 +60,13 @@ class Settings(BaseSettings):
     # ── Latency budgets (ms) ─────────────────────────────────────────────────
     brain_ttft_budget_ms: int = 400
     tts_ttfb_budget_ms: int = 150
-    total_loop_budget_ms: int = 800
+    total_loop_budget_ms: int = 5000
 
     # ── Brain behaviour ───────────────────────────────────────────────────────
     brain_max_tokens: int = 1024
     brain_temperature: float = 0.4
     brain_max_retries: int = 2
-    brain_request_timeout_s: float = 10.0
+    brain_request_timeout_s: float = 30.0
     brain_tool_timeout_s: float = 10.0  # per-tool timeout; 0.5s was too tight for remote NeonDB
     brain_max_tool_iterations: int = 6
 
