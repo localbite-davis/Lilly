@@ -563,7 +563,7 @@ async def _tool_request_doctor_review(session: "ConversationSession", inp: dict)
         review_id = await session._db.request_doctor_review(
             conversation_id=session.conversation_id,
             patient_id=session.patient_id,
-            case_packet=packet.model_dump(),
+            case_packet=packet.model_dump(mode="json"),
         )
         await session._db.audit("lily", "request_doctor_review", session.patient_id, session.conversation_id)
         return ToolResult(ok=True, data={"review_id": review_id})

@@ -152,6 +152,9 @@ class ConversationSession:
         self._session_ended: bool = False
         self._consecutive_validation_failures: dict[str, int] = {}
         self._language: str = settings.default_language
+        # Buffer for user messages that arrive while a brain turn holds the lock.
+        # Drained inside the lock so history never ends with an assistant message.
+        self._pending_user_messages: list[dict] = []
         self._language_locked: bool = False
 
         # RAG addendum for the current user turn — set in on_user_final, read
@@ -228,7 +231,7 @@ class ConversationSession:
                 call_sid=self.call_sid,
                 language=self._language,
             )
-        self.message_history.append({"role": "user", "content": payload.transcript})
+        self._pending_user_messages.append({"role": "user", "content": payload.transcript})
 
         # Run RAG retrieval BEFORE the brain turn. Best-effort — if classify
         # or retrieve fails, we proceed without retrieved context rather than
@@ -369,6 +372,11 @@ class ConversationSession:
 
     async def _run_brain_turn(self) -> None:
         async with self._turn_lock:
+            # Drain buffered user messages into history atomically under the lock.
+            # This prevents the history from ending with an assistant message when
+            # two transcripts arrive during a single brain turn (400 prefill error).
+            while self._pending_user_messages:
+                self.message_history.append(self._pending_user_messages.pop(0))
             self.state = SessionState.THINKING
             loop_start = time.monotonic()
             try:
