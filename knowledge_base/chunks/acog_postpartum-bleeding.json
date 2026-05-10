@@ -1,0 +1,44 @@
+[
+  {
+    "id": "acog-warning-bleeding-postpartum",
+    "text": "Heavy bleeding after giving birth — soaking through more than one maxi pad in an hour, or passing blood clots larger than an egg — can be a sign of postpartum hemorrhage. This is a medical emergency and you need to be seen right away. Call 911 or go to the emergency room. Do not drive yourself.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/infographics/urgent-maternal-warning-signs",
+    "topic": "postpartum bleeding",
+    "subtopic": "postpartum hemorrhage — heavy bleeding after birth",
+    "gestational_relevance": [
+      "postpartum_early"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_off",
+    "severity": "high",
+    "symptom_tags": [
+      "bleeding",
+      "postpartum"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  },
+  {
+    "id": "acog-postpartum-bleeding-monitor",
+    "text": "Bleeding after giving birth, called lochia, normally lasts about four to six weeks. It typically starts as bright red and heavy, becomes pinkish-brown over a couple of weeks, and ends as a yellowish-white discharge. Bleeding that stays heavy or bright red past the first week, comes with a fever, has a foul smell, or returns to heavy red bleeding after it had already lightened should be checked by a clinician — call your provider so they can review what is going on. Bleeding that soaks more than a pad in an hour, at any point, is an emergency.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/faqs/postpartum-pain-management",
+    "topic": "postpartum bleeding",
+    "subtopic": "lochia — normal timeline and when to call a provider",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "bleeding",
+      "lochia",
+      "postpartum"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]

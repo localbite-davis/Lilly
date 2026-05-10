@@ -1,0 +1,24 @@
+[
+  {
+    "id": "medline-normal-fatigue",
+    "text": "Feeling tired or fatigued during pregnancy is one of the most common and normal experiences, especially in the first and third trimesters. Your body is doing enormous work — growing a baby, increasing your blood volume, and adjusting your hormones. Rest when you can, eat regular small meals, drink water, and take short walks if you have the energy. If you are also feeling dizzy, very weak, or short of breath, mention that to your provider, but everyday tiredness on its own is normal.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/pregnancy.html",
+    "topic": "pregnancy normal symptoms",
+    "subtopic": "fatigue and tiredness in pregnancy — normal",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3",
+      "postpartum_early"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "fatigue"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]

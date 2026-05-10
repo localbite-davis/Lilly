@@ -14,6 +14,7 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 import sys
 from pathlib import Path
@@ -77,7 +78,7 @@ def _tick(ok: bool) -> str:
     return f"{GREEN}✓{NC}" if ok else f"{RED}✗{NC}"
 
 
-async def run_one(case: dict) -> bool:
+async def run_one(case: dict, verbose: bool = False) -> bool:
     query = case["query"]
     expected_action = case["expect_action_type"]
     expected_tier = case["expect_tier_signal"]
@@ -85,7 +86,7 @@ async def run_one(case: dict) -> bool:
     print(f'\nQuery: "{query}"')
 
     try:
-        result = await rag_for_turn(query)
+        result = await rag_for_turn(query, base_system_prompt="<SYSTEM PROMPT>")
     except Exception as e:
         print(f"  {RED}EXCEPTION:{NC} {e}")
         return False
@@ -111,14 +112,26 @@ async def run_one(case: dict) -> bool:
           f"emotional={result.classification.is_emotional} "
           f"severity={result.classification.severity_signal}{NC}")
 
+    if verbose:
+        print(f"\n  {DIM}── Full chunk text fed to Claude ─────────────────────{NC}")
+        for i, (chunk, dist) in enumerate(result.chunks, 1):
+            print(f"  {DIM}#{i}  [{chunk.source}] {chunk.subtopic}{NC}")
+            for line in chunk.text.splitlines() or [chunk.text]:
+                print(f"  {DIM}│ {line}{NC}")
+            print()
+        print(f"  {DIM}── Addendum (what gets appended to system prompt) ────{NC}")
+        for line in (result.addendum or "(empty — no RAG injection)").splitlines():
+            print(f"  {DIM}│ {line}{NC}")
+        print(f"  {DIM}──────────────────────────────────────────────────────{NC}\n")
+
     return action_ok and tier_ok
 
 
-async def main():
+async def main_async(verbose: bool):
     print(f"Running {len(TEST_CASES)} test cases...")
     results = []
     for case in TEST_CASES:
-        results.append(await run_one(case))
+        results.append(await run_one(case, verbose=verbose))
 
     passed = sum(results)
     total = len(results)
@@ -132,4 +145,9 @@ async def main():
 
 
 if __name__ == "__main__":
-    sys.exit(asyncio.run(main()))
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-v", "--verbose", action="store_true",
+                    help="Print the full chunk text and assembled system-prompt "
+                         "addendum that Claude will receive for each test query.")
+    args = ap.parse_args()
+    sys.exit(asyncio.run(main_async(args.verbose)))

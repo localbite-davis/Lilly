@@ -21,6 +21,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
 
+# Load .env BEFORE constructing the Anthropic client (which reads
+# ANTHROPIC_API_KEY at init time). Walks up looking for a .env file.
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
 import chromadb
 from anthropic import Anthropic
 
@@ -36,9 +41,10 @@ CHROMA_DIR = Path(__file__).parent / "chroma_db"
 COLLECTION_NAME = "lily_medical"
 
 # Cosine distance threshold — Chroma returns "distance" where lower = more
-# similar. With cosine, distance = 1 - similarity. 0.5 = similarity 0.5.
-# For the PoC, accept anything under 0.6 (sim >= 0.4) — tune after testing.
-DEFAULT_DISTANCE_THRESHOLD = 0.6
+# similar. With cosine, distance = 1 - similarity. all-MiniLM-L6-v2 produces
+# higher distances than OpenAI embeddings, so we use a generous threshold.
+# Anything past 1.0 is essentially noise.
+DEFAULT_DISTANCE_THRESHOLD = 1.2
 
 # Model for query classification. Haiku 4.5 is fast + cheap.
 CLASSIFIER_MODEL = "claude-haiku-4-5-20251001"
@@ -178,17 +184,36 @@ def retrieve_clinical(
     top_k: int = 3,
     distance_threshold: float = DEFAULT_DISTANCE_THRESHOLD,
 ) -> List[tuple[LilyChunk, float]]:
-    where: dict = {}
-    # Bias toward escalation chunks when severity is high
+    """
+    Severity is used as a re-ranking *bias*, not a hard filter. We retrieve
+    a wider candidate pool and then promote escalate/monitor chunks to the
+    top when severity is high. A hard filter would silently return zero
+    results when the KB has no matching content for the symptom + tier.
+    """
+    candidates = _query_chroma(query, where=None, top_k=top_k * 3,
+                                distance_threshold=distance_threshold)
+
     if severity_signal == "high":
-        where["action_type"] = {"$in": ["escalate", "monitor"]}
+        # Stable sort: escalate/monitor chunks rise to the top, ties broken by distance
+        priority = {"escalate": 0, "monitor": 1}
+        candidates.sort(key=lambda cd: (priority.get(cd[0].action_type, 2), cd[1]))
 
-    # NOTE: We intentionally do NOT filter by gestational_relevance because
-    # ChromaDB metadata is flat strings (we comma-joined the list). A naive
-    # equality match would fail. The classifier's gestational hint is used
-    # in prompt assembly, not retrieval, for the PoC.
+    return candidates[:top_k]
 
-    return _query_chroma(query, where, top_k, distance_threshold)
+
+def retrieve_emotional(
+    query: str,
+    top_k: int = 3,
+    distance_threshold: float = DEFAULT_DISTANCE_THRESHOLD,
+) -> List[tuple[LilyChunk, float]]:
+    """
+    Emotional turns (anxiety, sadness, suicidal ideation) need to retrieve
+    from postpartum mental-health content. We don't filter — the KB chunks
+    for these scenarios are tagged action_type=escalate/monitor with mood
+    symptom_tags, and good semantic match handles the rest.
+    """
+    return _query_chroma(query, where=None, top_k=top_k,
+                          distance_threshold=distance_threshold)
 
 
 def retrieve_navigational(
@@ -225,30 +250,37 @@ before any clinical content. Name the emotion. Do not jump to logistics.
 """
 
 
-def assemble_prompt(
-    base_system_prompt: str,
-    user_text: str,
+def build_addendum(
     classification: Classification,
     retrieved_chunks: List[tuple[LilyChunk, float]],
-    patient_context_block: str = "",
-    history_block: str = "",
 ) -> str:
     """
-    Assemble the final system-prompt string for Claude.
+    Build ONLY the RAG-specific block(s) that should be appended to the
+    caller's existing system prompt:
 
-    The exact ordering matches the spec in CLAUDE.md.
-    Patient context + history are passed in by the caller (your friend's
-    ConversationSession layer already builds these — pass them through).
+        [RETRIEVED MEDICAL CONTEXT]
+        ---
+        ...chunk text...
+        Source: ... | action_type: ... | similarity: ...
+        ---
+
+        [STRUCTURED REASONING]   (clinical turns only)
+        ...
+
+        [EMOTIONAL SUPPORT MODE] (emotional turns only)
+        ...
+
+    Returns "" if there are no chunks AND no reasoning block to add — the
+    caller can use that to skip RAG injection entirely on small-talk turns.
     """
-    parts = [base_system_prompt.strip()]
+    parts: List[str] = []
 
-    # Retrieved medical context
     if retrieved_chunks:
-        parts.append("\n[RETRIEVED MEDICAL CONTEXT]")
+        parts.append("[RETRIEVED MEDICAL CONTEXT]")
         parts.append(
             "The following is retrieved from authoritative maternal health "
             "sources. Use it to inform your response. Do not quote it directly. "
-            "Do not tell Maria you retrieved it. Speak as if you know this."
+            "Do not tell the patient you retrieved it. Speak as if you know this."
         )
         for chunk, dist in retrieved_chunks:
             parts.append("---")
@@ -260,22 +292,46 @@ def assemble_prompt(
             )
         parts.append("---")
 
-    # Patient context (caller-supplied)
+    if classification.is_clinical:
+        if parts:
+            parts.append("")
+        parts.append(CLINICAL_REASONING_BLOCK.strip())
+    elif classification.is_emotional:
+        if parts:
+            parts.append("")
+        parts.append(EMOTIONAL_BLOCK.strip())
+
+    return "\n".join(parts)
+
+
+def assemble_prompt(
+    base_system_prompt: str,
+    user_text: str,
+    classification: Classification,
+    retrieved_chunks: List[tuple[LilyChunk, float]],
+    patient_context_block: str = "",
+    history_block: str = "",
+) -> str:
+    """
+    Build the full system prompt for standalone testing — base prompt plus
+    addendum plus patient context plus history. Production callers should
+    use `build_addendum()` and append it to whatever they already have.
+    """
+    parts = [base_system_prompt.strip()] if base_system_prompt else []
+
+    addendum = build_addendum(classification, retrieved_chunks)
+    if addendum:
+        parts.append("\n" + addendum)
+
     if patient_context_block:
         parts.append("\n[PATIENT CONTEXT]")
         parts.append(patient_context_block.strip())
-
-    # Reasoning instruction — clinical OR emotional
-    if classification.is_clinical:
-        parts.append("\n" + CLINICAL_REASONING_BLOCK.strip())
-    elif classification.is_emotional:
-        parts.append("\n" + EMOTIONAL_BLOCK.strip())
 
     if history_block:
         parts.append("\n[CONVERSATION HISTORY]")
         parts.append(history_block.strip())
 
-    parts.append("\n[MARIA'S MESSAGE]")
+    parts.append("\n[USER MESSAGE]")
     parts.append(user_text.strip())
 
     return "\n".join(parts)
@@ -289,8 +345,14 @@ def assemble_prompt(
 class RAGResult:
     classification: Classification
     chunks: List[tuple[LilyChunk, float]]
-    prompt_addendum: str       # the retrieved-context + reasoning block
+    addendum: str              # ONLY the [RETRIEVED MEDICAL CONTEXT] + reasoning blocks
+    full_prompt: str           # whole thing including base system prompt + history (for standalone tests)
     action_types_retrieved: List[str]   # for the rules engine to consume
+
+    @property
+    def has_context(self) -> bool:
+        """True if any chunks were retrieved AND a reasoning block was built."""
+        return bool(self.chunks) or self.classification.is_emotional
 
 
 async def rag_for_turn(
@@ -328,6 +390,12 @@ async def rag_for_turn(
         )
         chunks.extend(nav)
 
+    if cls.is_emotional and not chunks:
+        # Pure emotional turns still need retrieval — PPD/suicidal queries
+        # depend on retrieving the right mental-health chunks.
+        emo = await asyncio.to_thread(retrieve_emotional, user_text, top_k)
+        chunks.extend(emo)
+
     # Deduplicate by chunk id, preserving order (lower distance first)
     seen = set()
     deduped: List[tuple[LilyChunk, float]] = []
@@ -338,7 +406,8 @@ async def rag_for_turn(
         deduped.append((c, d))
     deduped = deduped[:top_k]
 
-    addendum = assemble_prompt(
+    addendum = build_addendum(cls, deduped)
+    full = assemble_prompt(
         base_system_prompt=base_system_prompt,
         user_text=user_text,
         classification=cls,
@@ -350,6 +419,7 @@ async def rag_for_turn(
     return RAGResult(
         classification=cls,
         chunks=deduped,
-        prompt_addendum=addendum,
+        addendum=addendum,
+        full_prompt=full,
         action_types_retrieved=[c.action_type for c, _ in deduped],
     )

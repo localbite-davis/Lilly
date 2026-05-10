@@ -1,0 +1,47 @@
+[
+  {
+    "id": "psi-ppd-suicidal-thoughts",
+    "text": "If you are having thoughts of harming yourself or your baby, or feeling like you don't want to be here anymore, you are not alone and this is not your fault. Postpartum depression and anxiety are real medical conditions that respond to treatment. You deserve help right now. We can connect you with a doctor today who specializes in postpartum mental health.",
+    "source": "PSI",
+    "source_url": "https://www.postpartum.net/get-help/help-for-moms/",
+    "topic": "postpartum mental health",
+    "subtopic": "suicidal ideation — postpartum depression urgent support",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_up",
+    "severity": "high",
+    "symptom_tags": [
+      "depression",
+      "anxiety",
+      "mood",
+      "suicidal"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  },
+  {
+    "id": "psi-ppd-coping",
+    "text": "Feeling like you can't cope, crying often, or feeling disconnected from your baby for more than two weeks after birth is a sign of postpartum depression — not a personal failing. Many new mothers experience this. Talking to a clinician is the right first step. We can help connect you to one.",
+    "source": "PSI",
+    "source_url": "https://www.postpartum.net/learn-more/",
+    "topic": "postpartum mental health",
+    "subtopic": "postpartum depression — symptoms and when to seek help",
+    "gestational_relevance": [
+      "postpartum_early",
+      "postpartum_late"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "hand_up",
+    "severity": "medium",
+    "symptom_tags": [
+      "depression",
+      "mood",
+      "anxiety"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]

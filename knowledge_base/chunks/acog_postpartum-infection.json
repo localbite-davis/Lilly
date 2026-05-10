@@ -1,0 +1,21 @@
+[
+  {
+    "id": "acog-warning-fever-postpartum",
+    "text": "A fever above 100.4 degrees Fahrenheit (38 degrees Celsius) after giving birth can be a sign of an infection. Call your provider the same day. If the fever comes with chills, abdominal pain, or foul-smelling discharge, go to the emergency room.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/infographics/urgent-maternal-warning-signs",
+    "topic": "postpartum infection",
+    "subtopic": "postpartum fever — possible infection",
+    "gestational_relevance": [
+      "postpartum_early"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_off",
+    "severity": "high",
+    "symptom_tags": [
+      "fever"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]

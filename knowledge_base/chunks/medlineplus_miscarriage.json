@@ -1,0 +1,304 @@
+[
+  {
+    "id": "medlineplus-miscarriage-000-294174e2",
+    "text": "A miscarriage is an unexpected loss of pregnancy before the 20th week. Most miscarriages happen very early in the pregnancy, often before a woman even knows she is pregnant .",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "What is a miscarriage?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-001-bff12690",
+    "text": "A miscarriage can happen in any pregnancy. Most miscarriages occur because the fetus doesn't develop properly. This is often linked to a genetic problem with the fetus, such as an extra or missing chromosome. In many cases, the cause of a miscarriage is unknown. Some possible factors that may increase the chance of a miscarriage can include: Problems with the uterus or cervix Chronic diseases, including polycystic ovary syndrome Genetic problems with the fetus Pregnancy after 35 years of age Certain chronic (long-term) health conditions, such as uncontrolled diabetes",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "What causes a miscarriage?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-002-ccb8b9dd",
+    "text": "The signs of a miscarriage may be different for everyone and can vary based on how far along you are in your pregnancy. Signs of a miscarriage can include: Vaginal spotting or bleeding with or without pain. Some women may have some spotting in early pregnancy and don't miscarry. To be sure, contact your provider right away if you have any bleeding. Dark-colored vaginal discharge. A gush of fluid or tissue from your vagina. Cramping or pain in your abdomen (belly) or lower back. Sometimes, it's hard to know what's normal during pregnancy. If something seems unusual or is worrying you, talk to your provider.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "What are the signs of a miscarriage?",
+    "gestational_relevance": [
+      "T1"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "bleeding",
+      "cramping",
+      "spotting"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-003-e5b9404a",
+    "text": "To check if you have had a miscarriage, your provider may do the following: A pelvic exam to check your cervix. Blood tests to check things such as the amount of blood loss and confirm pregnancy . An ultrasound to check the fetus.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "How is a miscarriage diagnosed?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "handle",
+    "severity": "medium",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-004-9757ed2c",
+    "text": "Treatment after a miscarriage often depends on when it occurs during the pregnancy. If you miscarry early in your pregnancy, you may not need any treatment. If you are 12 or more weeks pregnant, you may need a shot to prevent problems with the Rh factor in future pregnancies. In some cases, tissue is left in the uterus. If you don't have any signs of infection, your provider may recommend waiting for the tissue to pass naturally. If you need treatment to remove the tissue, it can include: A procedure called dilatation and curettage (D&C) or vacuum aspiration No matter when it occurs, losing a pregnancy can be difficult. Counseling may help you cope with your grief. Later, if you decide to try to get pregnant again, talk with your provider to understand any risks. Many women who have a miscarriage go on to have healthy pregnancies later.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "What is the treatment for a miscarriage?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-005-691cb641",
+    "text": "Miscarriage can affect anyone and often can't be prevented. Focus on taking good care of yourself and start prenatal care visits early in your pregnancy. NIH: National Institute of Child Health and Human Development",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Can a miscarriage be prevented?",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-006-3bab3d7f",
+    "text": "About Pregnancy Loss (Before 20 Weeks of Pregnancy) (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Dealing with Grief after the Death of Your Baby (March of Dimes Foundation) Miscarriage (Mayo Foundation for Medical Education and Research) Miscarriages (Nemours Foundation) Also in Spanish Pregnancy Loss (Department of Health and Human Services, Office on Women's Health) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Start Here",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-007-870d3f5b",
+    "text": "How Do Health Care Providers Diagnose and Treat Pregnancy Loss (Before 20 Weeks of Pregnancy)? (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish Hysteroscopy (National Library of Medicine) Also in Spanish Progesterone Test (National Library of Medicine) Also in Spanish Sonohysterography (American College of Radiology; Radiological Society of North America) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Diagnosis and Tests",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-008-d5c1d5a5",
+    "text": "Miscarriage (March of Dimes Foundation)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Prevention and Risk Factors",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-009-55196614",
+    "text": "Dilation and Curettage (D&C) (Mayo Foundation for Medical Education and Research) Diethylstilbestrol (DES) Exposure and Cancer (National Cancer Institute) Also in Spanish Other FAQs About Pregnancy Loss (Before 20 Weeks of Pregnancy) (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish Pregnancy After Miscarriage: What You Need to Know (Mayo Foundation for Medical Education and Research) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Treatments and Therapies",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-010-08d1967d",
+    "text": "Bleeding and Spotting from the Vagina during Pregnancy (March of Dimes Foundation) Also in Spanish Blighted Ovum: What Causes It? (Mayo Foundation for Medical Education and Research) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "bleeding",
+      "spotting"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-011-7719cb1e",
+    "text": "Recurrent hydatidiform mole: MedlinePlus Genetics (National Library of Medicine)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Genetics",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-012-31278112",
+    "text": "PeriStats (Perinatal Statistics) (March of Dimes Foundation) ClinicalTrials.gov: Abortion, Spontaneous (National Institutes of Health) ClinicalTrials.gov: Fetal Death (National Institutes of Health) ClinicalTrials.gov: Gestational Trophoblastic Disease (National Institutes of Health) ClinicalTrials.gov: Hydatidiform Mole (National Institutes of Health)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Statistics and Research",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-013-b5304aba",
+    "text": "Article: Mendelian randomization analysis reveals a shared protective role of gut microbiota... Article: Occupational exposure to inhalational anesthetics and the risk of spontaneous abortion:... Article: Effect of home ultrasound in patients with previous late pregnancy loss:... Miscarriage -- see more articles",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Journal Articles References and abstracts from MEDLINE/PubMed (National Library of Medicine)",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-014-2ea01321",
+    "text": "Eunice Kennedy Shriver National Institute of Child Health and Human Development Also in Spanish How to Find an Ob-Gyn (American College of Obstetricians and Gynecologists) March of Dimes Foundation Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Find an Expert",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-015-d5c1d5a5",
+    "text": "Miscarriage (March of Dimes Foundation)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Women",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-miscarriage-016-bfc328b4",
+    "text": "D and C (Medical Encyclopedia) Also in Spanish HCG blood test - quantitative (Medical Encyclopedia) Also in Spanish Miscarriage (Medical Encyclopedia) Also in Spanish Miscarriage - threatened (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/miscarriage.html",
+    "topic": "miscarriage",
+    "subtopic": "Patient Handouts",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  }
+]

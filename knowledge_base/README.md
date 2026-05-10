@@ -45,19 +45,42 @@ A failing case means the chunks for that topic aren't good enough — fix
 the ingestion (better source page, better classifier rules) before
 trusting retrieval downstream.
 
-## How to use from the voice pipeline (later)
+## Test the full text → RAG → Claude → text loop (no audio)
+
+```bash
+# interactive REPL — type messages, watch Lily respond
+python knowledge_base/text_chat.py
+python knowledge_base/text_chat.py --debug   # also shows the RAG addendum injected
+
+# scripted assertions — covers smalltalk-skips-RAG and clinical-uses-RAG cases
+python knowledge_base/test_text_flow.py
+python knowledge_base/test_text_flow.py -v   # also dump Lily's replies
+```
+
+## Wiring into ConversationSession
+
+The integration contract is short: **only inject the RAG addendum on
+clinical / navigational / emotional turns.** Smalltalk turns skip RAG so
+we don't pay the ~150 ms classification + retrieval latency on greetings.
 
 ```python
 from knowledge_base.retrieve import rag_for_turn
 
-result = await rag_for_turn(
+# Inside ConversationSession, right before building the system prompt
+# for a Claude turn:
+rag = await rag_for_turn(
     user_text=transcript,
-    base_system_prompt=LILY_STATIC_SYSTEM_PROMPT,
-    patient_context_block=patient_block,
-    history_block=last_3_turns,
+    base_system_prompt="",                     # we only need the addendum here
 )
-# result.prompt_addendum → feed to Claude as the system prompt
-# result.action_types_retrieved → flag to rules engine for cross-check
+
+if rag.has_context and rag.addendum:
+    system_prompt = LILY_STATIC_SYSTEM_PROMPT + "\n\n" + rag.addendum
+else:
+    system_prompt = LILY_STATIC_SYSTEM_PROMPT  # smalltalk — skip RAG entirely
+
+# Pass action_types_retrieved to the rules engine for cross-check
+if "escalate" in rag.action_types_retrieved:
+    rules_engine.flag_escalation_context(session_id)
 ```
 
 The rules engine still owns the final triage classification.

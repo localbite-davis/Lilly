@@ -44,6 +44,7 @@ import chromadb
 # Local import — schema in same package
 sys.path.insert(0, str(Path(__file__).parent))
 from schema import LilyChunk  # noqa: E402
+from seed_content import SEED_CHUNKS  # noqa: E402
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -80,37 +81,20 @@ MEDLINEPLUS_TOPICS = {
     "pregnancyandmedicines": "https://medlineplus.gov/pregnancyandmedicines.html",
 }
 
-# ACOG FAQ pages — public, free, patient-facing.
-ACOG_FAQS = {
-    "preeclampsia-and-high-blood-pressure-during-pregnancy":
-        "https://www.acog.org/womens-health/faqs/preeclampsia-and-high-blood-pressure-during-pregnancy",
-    "postpartum-depression":
-        "https://www.acog.org/womens-health/faqs/postpartum-depression",
-    "bleeding-during-pregnancy":
-        "https://www.acog.org/womens-health/faqs/bleeding-during-pregnancy",
-    "nutrition-during-pregnancy":
-        "https://www.acog.org/womens-health/faqs/nutrition-during-pregnancy",
-    "postpartum-pain-management":
-        "https://www.acog.org/womens-health/faqs/postpartum-pain-management",
-    "breastfeeding-your-baby":
-        "https://www.acog.org/womens-health/faqs/breastfeeding-your-baby",
-    "early-pregnancy-loss":
-        "https://www.acog.org/womens-health/faqs/early-pregnancy-loss",
-    "morning-sickness-nausea-and-vomiting-of-pregnancy":
-        "https://www.acog.org/womens-health/faqs/morning-sickness-nausea-and-vomiting-of-pregnancy",
-    "exercise-during-pregnancy":
-        "https://www.acog.org/womens-health/faqs/exercise-during-pregnancy",
-    "gestational-diabetes":
-        "https://www.acog.org/womens-health/faqs/gestational-diabetes",
-    "depression-and-postpartum-depression-resources":
-        "https://www.acog.org/womens-health/faqs/depression-and-postpartum-depression-resources",
-}
+# ACOG FAQ pages are JavaScript-rendered (Expand-All accordion components).
+# BeautifulSoup can't see the actual Q&A content, so scraping returns page
+# chrome ("Frequently Asked Questions", "Expand All", etc.). We rely on
+# hand-curated SEED_CHUNKS (seed_content.py) to cover ACOG content. Leaving
+# the dict empty here. To add ACOG via Playwright in the future, populate
+# this dict and write a separate render-then-parse fetcher.
+ACOG_FAQS: dict[str, str] = {}
+ACOG_CURATED: dict[str, str] = {}
 
-# ACOG curated pages outside the FAQ set — keep as a separate dict so we can
-# tag them differently (e.g. the urgent warning signs are always escalate).
-ACOG_CURATED = {
-    "urgent-maternal-warning-signs":
-        "https://www.acog.org/womens-health/infographics/urgent-maternal-warning-signs",
+# Headings that are page chrome / nav cruft, not real subtopics.
+NOISE_HEADINGS = {
+    "expand all", "frequently asked questions", "summary", "topic image",
+    "resources and glossary", "share this page", "see, play and learn",
+    "research", "clinical trials", "learn more", "related issues",
 }
 
 
@@ -194,7 +178,10 @@ def html_to_paragraphs(html: str, source: str) -> List[Tuple[str, str]]:
     for el in root.descendants:
         name = getattr(el, "name", None)
         if name in ("h1", "h2", "h3", "h4"):
-            current_heading = el.get_text(" ", strip=True)
+            heading_text = el.get_text(" ", strip=True)
+            # Skip page-chrome/nav headings; keep prior real heading instead.
+            if heading_text.lower().strip() not in NOISE_HEADINGS:
+                current_heading = heading_text
         elif name in ("p", "li"):
             text = el.get_text(" ", strip=True)
             text = re.sub(r"\s+", " ", text)
@@ -569,7 +556,12 @@ def main():
     chunks = build_chunks(html_sources, from_pdf=False)
     if pdf_sources:
         chunks += build_chunks(pdf_sources, from_pdf=True)
-    print(f"  produced {len(chunks)} chunks")
+    print(f"  produced {len(chunks)} scraped chunks")
+
+    # Add hand-curated authoritative seed chunks (cover scenarios where
+    # automated scraping fails — ACOG FAQs, PSI postpartum mental health, etc.)
+    print(f"  adding {len(SEED_CHUNKS)} hand-curated seed chunks")
+    chunks += list(SEED_CHUNKS)
 
     if not chunks:
         print("No chunks produced — aborting before Chroma upsert.")

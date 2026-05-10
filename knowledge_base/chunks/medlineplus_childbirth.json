@@ -1,0 +1,221 @@
+[
+  {
+    "id": "medlineplus-childbirth-000-7a6dd0da",
+    "text": "Childbirth is the process of giving birth to a baby. It includes labor and delivery of the fetus and the placenta. The placenta is the organ that supplies food and oxygen through the umbilical cord to your fetus during pregnancy . A full-term pregnancy is 40 weeks. Labor usually begins between 37 and 42 weeks of pregnancy . It is how your body prepares to give birth to your baby. Preterm labor can start before 37 completed weeks of pregnancy. It can lead to premature birth. Premature babies may face serious health risks.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "What is childbirth?",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-001-5392bf2d",
+    "text": "Signs that you might be going into labor include: Regular contractions start to come closer together Leaking fluid or bleeding from the vagina The signs of labor, when labor starts, and the time it takes to deliver your baby can vary with each pregnancy. Call your health care provider if you have any signs of labor, even if it is before your due date.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "How do I know if I'm going into labor?",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "bleeding",
+      "contractions"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-002-501a7d14",
+    "text": "The first stage begins with contractions. This stage could last for hours or days. It continues until your cervix has become thinner and dilated (stretched) to about 4 inches wide to allow your baby to pass through. The second stage is when you begin to push downward. Crowning is when your baby's scalp comes into view. Shortly afterward, your baby is born. The third stage is when you deliver the placenta, and your provider cuts the umbilical cord. Sometimes, mothers need to have labor induced. Medicines or other methods are used to start labor. This is usually only done when the due date has passed or if a problem with the pregnancy risks the health of the mother or the fetus. Mothers and their babies are closely monitored during labor and delivery. Delivery can occur either vaginally through the birth canal, or if there are complications , the delivery may be done surgically by a Cesarean section . This is when the baby is taken out through your abdomen (belly) and uterus.",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "What are the stages of labor?",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "monitor",
+    "tier_signal": "handle",
+    "severity": "medium",
+    "symptom_tags": [
+      "contractions"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-003-1d50c2ff",
+    "text": "The amount of pain during childbirth can vary based on the size and position of the baby, your level of comfort with the process, and the strength of your contractions. Options for pain relief during labor and delivery may include: Medicines may reduce the pain, but they don't stop it completely. Natural methods ease pain without taking medicines. A few examples include using relaxation techniques, a birthing ball, massage, or taking a bath or shower. Combination of medicines and natural methods. Discuss your options, risks, and benefits of pain relief during labor and delivery with your provider before your due date. NIH: National Institute of Child Health and Human Development",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "What are the options for pain relief during childbirth?",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "navigate",
+    "tier_signal": "none",
+    "severity": "low",
+    "symptom_tags": [
+      "contractions"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-004-d9785626",
+    "text": "Labor and Birth (Department of Health and Human Services, Office on Women's Health) Also in Spanish Stages of Labor (March of Dimes Foundation) Also in Spanish What Is Labor? (Eunice Kennedy Shriver National Institute of Child Health and Human Development) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Start Here",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-005-3d75a8db",
+    "text": "Contractions and Signs of Labor (March of Dimes Foundation) Cord Blood Testing and Banking (National Library of Medicine) Also in Spanish Water Breaking: Understand This Sign of Labor (Mayo Foundation for Medical Education and Research) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Diagnosis and Tests",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [
+      "contractions"
+    ],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-006-8de50017",
+    "text": "Dealing with Pain during Childbirth (Nemours Foundation) Also in Spanish Apgar Scores (American Academy of Pediatrics) Also in Spanish Where Should I Have My Baby? (Nemours Foundation) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Treatments and Therapies",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-007-ac89c383",
+    "text": "Assisted Vaginal Delivery (American College of Obstetricians and Gynecologists) Cesarean Section: MedlinePlus Health Topic (National Library of Medicine) Also in Spanish Episiotomy: When It's Needed, When It's Not (Mayo Foundation for Medical Education and Research) Also in Spanish Induction of Labor at 39 Weeks (American College of Obstetricians and Gynecologists) Labor Pain (American Society of Anesthesiologists) Natural Childbirth (Nemours Foundation) Also in Spanish What if My Baby Isn't Born by My Due Date? (Nemours Foundation) Also in Spanish Why at Least 39 Weeks Is Best for Your Baby (March of Dimes Foundation)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Specifics",
+    "gestational_relevance": [
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-008-9133e61b",
+    "text": "Epidural - series (Medical Encyclopedia) Also in Spanish Episiotomy - series (Medical Encyclopedia) Also in Spanish Vaginal birth - series (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Images",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-009-579e13fb",
+    "text": "FastStats: Births - Method of Delivery (National Center for Health Statistics) PeriStats (Perinatal Statistics) (March of Dimes Foundation) ClinicalTrials.gov: Delivery, Obstetric (National Institutes of Health) ClinicalTrials.gov: Labor, Obstetric (National Institutes of Health)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Statistics and Research",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-010-b403a6d0",
+    "text": "Article: Childbirth experiences in proactive versus standard support of labor in the... Article: The effects of a prenatal labor analgesia education program on outcomes... Article: Rethinking procedural pain in labor: A comparison of lidocaine injection techniques... Childbirth -- see more articles",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Journal Articles References and abstracts from MEDLINE/PubMed (National Library of Medicine)",
+    "gestational_relevance": [],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-011-0ee6ae2f",
+    "text": "Accredited Birth Centers (Commission for the Accreditation of Birth Centers) American College of Nurse-Midwives American College of Obstetricians and Gynecologists Birthing-Friendly Hospitals and Health Systems (Centers for Medicare & Medicaid Services) Department of Health and Human Services, Office on Women's Health Also in Spanish How to Find an Ob-Gyn (American College of Obstetricians and Gynecologists)",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Find an Expert",
+    "gestational_relevance": [],
+    "action_type": "navigate",
+    "tier_signal": "none",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  },
+  {
+    "id": "medlineplus-childbirth-012-99a7dde0",
+    "text": "Am I in labor? (Medical Encyclopedia) Also in Spanish Assisted delivery with forceps (Medical Encyclopedia) Also in Spanish Delivery presentations (Medical Encyclopedia) Also in Spanish Epidural block - pregnancy (Medical Encyclopedia) Also in Spanish Episiotomy (Medical Encyclopedia) Also in Spanish Questions to ask your doctor about hospital care after delivery (Medical Encyclopedia) Also in Spanish Questions to ask your doctor about labor and delivery (Medical Encyclopedia) Also in Spanish Spinal and epidural anesthesia (Medical Encyclopedia) Also in Spanish What to bring to your labor and delivery (Medical Encyclopedia) Also in Spanish Your baby in the birth canal (Medical Encyclopedia) Also in Spanish",
+    "source": "MedlinePlus",
+    "source_url": "https://medlineplus.gov/childbirth.html",
+    "topic": "childbirth",
+    "subtopic": "Patient Handouts",
+    "gestational_relevance": [
+      "postpartum_early",
+      "newborn"
+    ],
+    "action_type": "reassure",
+    "tier_signal": "handle",
+    "severity": "low",
+    "symptom_tags": [],
+    "plain_language": true,
+    "last_verified": "2026"
+  }
+]

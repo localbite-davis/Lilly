@@ -1,0 +1,50 @@
+[
+  {
+    "id": "acog-warning-chest-pain",
+    "text": "Chest pain or trouble breathing during pregnancy or after birth can be a sign of a blood clot in the lungs or a heart problem. Both are emergencies. Call 911 or go to the emergency room immediately.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/infographics/urgent-maternal-warning-signs",
+    "topic": "cardiac",
+    "subtopic": "chest pain or trouble breathing in pregnancy",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3",
+      "postpartum_early"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_off",
+    "severity": "high",
+    "symptom_tags": [
+      "chest pain",
+      "shortness of breath"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  },
+  {
+    "id": "acog-warning-leg-pain-clot",
+    "text": "Pain, swelling, redness, or warmth in one leg, especially the calf, can be a sign of a blood clot. Pregnancy and the weeks right after birth raise your risk. Do not massage the leg. Call your provider or go to the emergency room right away.",
+    "source": "ACOG",
+    "source_url": "https://www.acog.org/womens-health/infographics/urgent-maternal-warning-signs",
+    "topic": "cardiac",
+    "subtopic": "leg pain or swelling — possible blood clot",
+    "gestational_relevance": [
+      "T1",
+      "T2",
+      "T3",
+      "postpartum_early"
+    ],
+    "action_type": "escalate",
+    "tier_signal": "hand_off",
+    "severity": "high",
+    "symptom_tags": [
+      "leg pain",
+      "swelling",
+      "swollen leg",
+      "calf pain"
+    ],
+    "plain_language": true,
+    "last_verified": "2024"
+  }
+]
