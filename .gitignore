@@ -28,6 +28,11 @@ Thumbs.db
 logs/
 received_audio.wav
 *.wav
+# Node.js
+node_modules/
+dist/
+dashboard-react/node_modules/
+dashboard-react/dist/
 
 # Local dev scripts — machine-specific, not for CI
 start_local.sh

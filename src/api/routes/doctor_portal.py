@@ -119,7 +119,7 @@ def handle_case_action(item_id: int, action: str, request: Request, data: dict =
 @router.get("/past")
 def get_past_cases(db: Session = Depends(get_db)):
     """Returns resolved/escalated cases for history."""
-    past_items = db.query(DoctorQueue, Patient).join(Patient).filter(
+    past_items = db.query(DoctorQueue, Patient).select_from(DoctorQueue).join(Patient, DoctorQueue.patient_id == Patient.id).filter(
         DoctorQueue.status.in_(["resolved", "escalated_by_doctor", "auto_escalated"])
     ).order_by(DoctorQueue.created_at.desc()).all()
 
@@ -150,7 +150,7 @@ def get_patients(db: Session = Depends(get_db)):
 @router.get("/standing-orders")
 def get_standing_orders(db: Session = Depends(get_db)):
     """Returns all active standing orders."""
-    orders = db.query(StandingOrder, Patient).join(Patient).all()
+    orders = db.query(StandingOrder, Patient).select_from(StandingOrder).join(Patient, StandingOrder.patient_id == Patient.id).all()
     return [{
         "id": o.id,
         "patient_name": p.first_name,
