@@ -9,9 +9,11 @@ Tests the full storage and retrieval loop without Twilio or ElevenLabs:
   - Symptoms / vitals / triage written back to NeonDB
   - Post-call summary saved to Pinecone
 
-Usage:
-    conda run -n lily python scripts/test_call.py --phone +15550001234
-    conda run -n lily python scripts/test_call.py --phone +15559999999  # unknown → registration flow
+Usage (IMPORTANT: activate conda env first — conda run breaks interactive TTY):
+
+    conda activate lily
+    python scripts/test_call.py --phone +15550001234   # known patient
+    python scripts/test_call.py --phone +19995550000   # unknown → registration flow
 
 Ctrl+C or type 'quit' to end.
 """
@@ -30,6 +32,15 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from dotenv import load_dotenv
 load_dotenv()
+
+# Force DEBUG=false so SQLAlchemy engine echo is off in this script.
+# Must happen before any src.* import so Settings() picks it up on init.
+import os
+os.environ["DEBUG"] = "false"
+
+import logging
+logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
+logging.getLogger("asyncio").setLevel(logging.WARNING)
 
 
 # ── ANSI colours ─────────────────────────────────────────────────────────────
@@ -330,6 +341,17 @@ async def main(phone: str, api_key: str) -> None:
 
 
 if __name__ == "__main__":
+    if not sys.stdin.isatty():
+        print(
+            f"{RED}Error: stdin is not a TTY. "
+            "conda run breaks interactive input.\n"
+            f"Run instead:{RESET}\n"
+            "  conda activate lily\n"
+            "  python scripts/test_call.py --phone +19995550000",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     parser = argparse.ArgumentParser(description="Lily CLI — real NeonDB + Pinecone + Claude")
     parser.add_argument("--phone", default="+15550001234", help="Caller phone number to simulate")
     parser.add_argument(
