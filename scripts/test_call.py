@@ -115,13 +115,13 @@ class VerboseDB:
             _log("NeonDB READ", f"SMS vitals found — {result}", BLUE)
         return result
 
-    async def request_doctor_review(self, conversation_id: int, case_packet: dict) -> int:
-        review_id = await self._db.request_doctor_review(conversation_id, case_packet)
-        _log("NeonDB WRITE", f"doctor review requested — review_id={review_id}", RED)
+    async def request_doctor_review(self, conversation_id: int, patient_id: int | None, case_packet: dict) -> int:
+        review_id = await self._db.request_doctor_review(conversation_id, patient_id, case_packet)
+        _log("NeonDB WRITE", f"doctor review requested — review_id={review_id} patient_id={patient_id}", RED)
         return review_id
 
-    async def send_sms(self, to_phone: str, body: str) -> None:
-        await self._db.send_sms(to_phone, body)
+    async def send_sms(self, to_phone: str, body: str, conversation_id: int | None = None) -> None:
+        await self._db.send_sms(to_phone, body, conversation_id)
         _log("NeonDB WRITE", f"SMS logged → {to_phone}: {body[:80]}", GREEN)
 
     async def audit(self, actor: str, action: str, patient_id, conversation_id) -> None:

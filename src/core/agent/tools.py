@@ -510,6 +510,7 @@ async def _tool_request_doctor_review(session: "ConversationSession", inp: dict)
         )
         review_id = await session._db.request_doctor_review(
             conversation_id=session.conversation_id,
+            patient_id=session.patient_id,
             case_packet=packet.model_dump(),
         )
         await session._db.audit("lily", "request_doctor_review", session.patient_id, session.conversation_id)
@@ -526,7 +527,7 @@ async def _tool_send_patient_sms(session: "ConversationSession", inp: dict) -> T
     if session._patient_context is None or not session._patient_context.found:
         return ToolResult(ok=False, error="No patient context loaded.", error_code="PRECONDITION_FAILED")
     phone = session._from_number
-    session.enqueue(session._db.send_sms(to_phone=phone, body=data.body))
+    session.enqueue(session._db.send_sms(to_phone=phone, body=data.body, conversation_id=session.conversation_id))
     session.enqueue(session._db.audit("lily", "send_patient_sms", session.patient_id, session.conversation_id))
     return ToolResult(ok=True, data={"to": phone})
 
@@ -538,7 +539,7 @@ async def _tool_send_emergency_contact_sms(session: "ConversationSession", inp: 
     if session._patient_context is None or not session._patient_context.emergency_contact_phone:
         return ToolResult(ok=False, error="No emergency contact on file.", error_code="PRECONDITION_FAILED")
     phone = session._patient_context.emergency_contact_phone
-    session.enqueue(session._db.send_sms(to_phone=phone, body=data.body))
+    session.enqueue(session._db.send_sms(to_phone=phone, body=data.body, conversation_id=session.conversation_id))
     session.enqueue(session._db.audit("lily", "send_emergency_contact_sms", session.patient_id, session.conversation_id))
     return ToolResult(ok=True, data={"to": phone})
 

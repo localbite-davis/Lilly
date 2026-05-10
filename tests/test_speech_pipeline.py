@@ -16,7 +16,13 @@ load_dotenv()
 # ElevenLabs TTS: synthesize a short phrase and check we get audio bytes back.
 # ---------------------------------------------------------------------------
 
+def _elevenlabs_key_present() -> bool:
+    k = __import__("os").getenv("ELEVENLABS_API_KEY", "")
+    return bool(k) and not k.startswith("your_")
+
+
 @pytest.mark.asyncio
+@pytest.mark.skipif(not _elevenlabs_key_present(), reason="ELEVENLABS_API_KEY not set — skipping live TTS test")
 async def test_elevenlabs_tts():
     from src.services.tts_elevenlabs import ElevenLabsTTS
 
@@ -42,6 +48,7 @@ async def test_elevenlabs_tts():
 # ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
+@pytest.mark.skipif(not _elevenlabs_key_present(), reason="ELEVENLABS_API_KEY not set — skipping live STT test")
 async def test_elevenlabs_stt_connects():
     from src.services.stt_elevenlabs import ElevenLabsSTT
 

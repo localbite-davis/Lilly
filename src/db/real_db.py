@@ -194,12 +194,12 @@ class RealDB:
     # ── Doctor workflow ───────────────────────────────────────────────────────
 
     async def request_doctor_review(
-        self, conversation_id: int, case_packet: dict
+        self, conversation_id: int, patient_id: int | None, case_packet: dict
     ) -> int:
         async with get_async_session() as session:
             review = DoctorReview(
                 conversation_id=conversation_id,
-                patient_id=case_packet.get("conversation_id"),  # reuse field for patient tracing
+                patient_id=patient_id,
                 case_packet_json=json.dumps(case_packet),
             )
             session.add(review)
@@ -209,13 +209,19 @@ class RealDB:
 
     # ── SMS ───────────────────────────────────────────────────────────────────
 
-    async def send_sms(self, to_phone: str, body: str) -> None:
+    async def send_sms(
+        self, to_phone: str, body: str, conversation_id: int | None = None
+    ) -> None:
         """
         Log SMS to DB. Wire to Twilio in Layer 1 (Voice Pipeline Lead).
         # TODO(human): call Twilio client here for real SMS delivery.
         """
         async with get_async_session() as session:
-            session.add(SMSLog(to_phone=to_phone, body=body))
+            session.add(SMSLog(
+                to_phone=to_phone,
+                body=body,
+                conversation_id=conversation_id,
+            ))
         log.info("sms_queued", to="<redacted>", body_len=len(body))
 
     # ── Audit ────────────────────────────────────────────────────────────────

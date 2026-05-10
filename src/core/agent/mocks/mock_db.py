@@ -127,20 +127,21 @@ class MockDB:
         self._sms_vitals[patient_id] = vitals
 
     async def request_doctor_review(
-        self, conversation_id: int, case_packet: dict
+        self, conversation_id: int, patient_id: int | None, case_packet: dict
     ) -> int:
         review_id = self._next_review_id
         self._next_review_id += 1
         self.reviews.append({
             "review_id": review_id,
             "conversation_id": conversation_id,
+            "patient_id": patient_id,
             "case_packet": case_packet,
             "requested_at": datetime.now(timezone.utc).isoformat(),
         })
         return review_id
 
-    async def send_sms(self, to_phone: str, body: str) -> None:
-        self.sms_sent.append({"to": to_phone, "body": body})
+    async def send_sms(self, to_phone: str, body: str, conversation_id: int | None = None) -> None:
+        self.sms_sent.append({"to": to_phone, "body": body, "conversation_id": conversation_id})
 
     async def audit(
         self,
