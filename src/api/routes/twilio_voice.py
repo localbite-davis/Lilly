@@ -12,7 +12,7 @@ from twilio.twiml.voice_response import VoiceResponse, Connect
 from src.core.agent.llm_client import BrainManager
 from src.core.agent.prompts import LILY_SYSTEM_PROMPT, EXTRACT_SYMPTOMS_TOOL
 from src.core.agent.state import ConversationState
-from src.services.stt_deepgram import DeepgramSTT
+from src.services.stt_elevenlabs import ElevenLabsSTT
 from src.services.tts_elevenlabs import ElevenLabsTTS
 
 router = APIRouter()
@@ -49,10 +49,10 @@ async def handle_incoming_call(request: Request):
 #
 # Three concurrent async tasks share two queues:
 #
-#   transcript_queue : DeepgramSTT → llm_tts_task
+#   transcript_queue : ElevenLabsSTT → llm_tts_task
 #   audio_out_queue  : llm_tts_task → twilio_sender_task
 #
-# Task 1 · twilio_receiver  — reads Twilio media frames, pipes audio to Deepgram.
+# Task 1 · twilio_receiver  — reads Twilio media frames, pipes audio to ElevenLabs STT.
 # Task 2 · llm_tts          — waits for transcripts, calls LLM, streams TTS.
 # Task 3 · twilio_sender    — drains audio_out_queue, sends mulaw back to Twilio.
 # ---------------------------------------------------------------------------
@@ -64,7 +64,7 @@ async def websocket_endpoint(websocket: WebSocket):
     transcript_queue: asyncio.Queue[str | None] = asyncio.Queue()
     audio_out_queue: asyncio.Queue[bytes | None] = asyncio.Queue()
 
-    stt = DeepgramSTT(transcript_queue)
+    stt = ElevenLabsSTT(transcript_queue)
     await stt.connect()
 
     # stream_sid is set when Twilio sends the "start" event.
