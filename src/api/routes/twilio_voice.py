@@ -23,8 +23,10 @@ from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from twilio.twiml.voice_response import VoiceResponse, Connect
 
+from src.core.agent.real_client import RealAnthropicClient
 from src.core.agent.session import ConversationSession
 from src.core.schemas import UserFinalPayload
+from src.core.triage.rules_engine import classify_case
 from src.db.real_db import RealDB
 from src.services.stt_elevenlabs import ElevenLabsSTT
 from src.services.tts_elevenlabs import ElevenLabsTTSFactory
@@ -86,7 +88,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     await stt.connect()
 
                     tts_factory = ElevenLabsTTSFactory(audio_out_queue, stt)
-                    session = ConversationSession(db=RealDB(), tts_factory=tts_factory)
+                    session = ConversationSession(
+                        call_sid=call_sid,
+                        direction="inbound",
+                        anthropic=RealAnthropicClient(),
+                        tts_factory=tts_factory,
+                        db=RealDB(),
+                        rules_engine=classify_case,
+                    )
 
                     # start() fetches patient context from NeonDB + Pinecone,
                     # then streams the greeting through Claude → TTS.
@@ -114,18 +123,19 @@ async def websocket_endpoint(websocket: WebSocket):
     async def llm_loop():
         try:
             while True:
-                transcript = await transcript_queue.get()
-                if transcript is None:
+                item = await transcript_queue.get()
+                if item is None:
                     break
                 if session is None:
                     continue
 
-                _log(f"user → '{transcript}'")
+                transcript, detected_language = item
+                _log(f"user [{detected_language}] → '{transcript}'")
                 await session.on_user_final(UserFinalPayload(
                     call_sid=stream_sid or "",
                     transcript=transcript,
                     confidence=1.0,
-                    is_final=True,
+                    detected_language=detected_language,
                 ))
         except Exception as exc:
             _log(f"llm_loop error: {exc!r}")

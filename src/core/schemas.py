@@ -23,9 +23,9 @@ class UserFinalPayload(BaseModel):
     transcript: str
     confidence: float = Field(ge=0.0, le=1.0)
     word_confidences: list[WordConf] = []
-    started_at_ms: int
-    ended_at_ms: int
-    detected_language: str = "en" 
+    started_at_ms: int = 0
+    ended_at_ms: int = 0
+    detected_language: str = "en"
 
 
 class StandingOrderView(BaseModel):
