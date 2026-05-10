@@ -62,6 +62,7 @@ class Settings(BaseSettings):
     brain_temperature: float = 0.4
     brain_max_retries: int = 2
     brain_request_timeout_s: float = 10.0
+    brain_tool_timeout_s: float = 10.0  # per-tool timeout; 0.5s was too tight for remote NeonDB
     brain_max_tool_iterations: int = 6
 
     # ── Chunking ──────────────────────────────────────────────────────────────

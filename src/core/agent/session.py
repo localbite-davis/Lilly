@@ -361,7 +361,7 @@ class ConversationSession:
                 # Track consecutive validation failures per tool
                 try:
                     raw_result = await asyncio.wait_for(
-                        handler(self, tu.input), timeout=0.5
+                        handler(self, tu.input), timeout=settings.brain_tool_timeout_s
                     )
                     result = raw_result
                     if result.error_code == "TOOL_VALIDATION_ERROR":
