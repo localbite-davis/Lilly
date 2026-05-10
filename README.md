@@ -35,6 +35,13 @@ Claude (claude-sonnet-4-6) runs the conversation
     • Extracts symptoms and vitals via tool calls
     • Calls the ACOG rules engine to classify the case
     • Personalizes using patient history from Pinecone + PostgreSQL
+    • RAG injects ACOG/MedlinePlus context per turn (ChromaDB)
+         │
+         ▼
+OpenBioLLM-70B validates clinical accuracy
+    • Independently scores medical claims before delivery
+    • Flags hallucinations or protocol deviations → response revised
+    • Rules engine verdicts bypass this check (already deterministic)
          │
     ┌────┴────┐
     ▼         ▼
