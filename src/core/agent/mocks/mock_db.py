@@ -82,6 +82,14 @@ class MockDB:
         })
         return conv_id
 
+    async def link_conversation_to_patient(
+        self, conversation_id: int, patient_id: int
+    ) -> None:
+        for c in self.conversations:
+            if c["conversation_id"] == conversation_id:
+                c["patient_id"] = patient_id
+                break
+
     async def end_conversation(
         self, conversation_id: int, tier_reached: str, summary: str
     ) -> None:

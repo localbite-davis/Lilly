@@ -115,6 +115,14 @@ class RealDB:
             await session.refresh(row)
             return _PatientRow(row, [], [], [])
 
+    async def link_conversation_to_patient(
+        self, conversation_id: int, patient_id: int
+    ) -> None:
+        async with get_async_session() as session:
+            conv = await session.get(Conversation, conversation_id)
+            if conv:
+                conv.patient_id = patient_id
+
     # ── Conversations ────────────────────────────────────────────────────────
 
     async def create_conversation(

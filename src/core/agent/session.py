@@ -169,12 +169,8 @@ class ConversationSession:
     async def start(self, from_number: str, outbound_context: dict | None = None) -> None:
         self._write_queue.start()
         self._from_number = from_number
-        self.conversation_id = await self._db.create_conversation(
-            patient_id=None,
-            call_sid=self.call_sid,
-            direction=self.direction,
-        )
 
+        # Load patient BEFORE creating the conversation so the FK is set correctly.
         if self.direction == "inbound":
             self._patient_context = await self._load_patient_context(from_number)
             if self._patient_context.found:
@@ -187,6 +183,12 @@ class ConversationSession:
                 self.patient_id = self._patient_context.patient_id
             opening = self._build_outbound_opening(outbound_context or {})
             self.message_history = [{"role": "user", "content": opening}]
+
+        self.conversation_id = await self._db.create_conversation(
+            patient_id=self.patient_id,  # correctly None for new callers, set for known patients
+            call_sid=self.call_sid,
+            direction=self.direction,
+        )
 
         self.state = SessionState.GREETING
         await self._run_brain_turn()

@@ -374,6 +374,12 @@ async def _tool_register_patient(session: "ConversationSession", inp: dict) -> T
         ctx = await session._load_patient_context(session._from_number)
         session._patient_context = ctx
         session.patient_id = getattr(patient, "patient_id", None)
+        # Link the already-open conversation to the newly registered patient.
+        if session.patient_id and session.conversation_id:
+            session.enqueue(session._db.link_conversation_to_patient(
+                conversation_id=session.conversation_id,
+                patient_id=session.patient_id,
+            ))
         return ToolResult(ok=True, data={"patient_id": session.patient_id, "first_name": data.first_name})
     except Exception as exc:
         log.error("tool_register_patient_failed", exc_info=exc)

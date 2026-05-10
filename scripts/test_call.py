@@ -127,6 +127,10 @@ class VerboseDB:
     async def audit(self, actor: str, action: str, patient_id, conversation_id) -> None:
         await self._db.audit(actor, action, patient_id, conversation_id)
 
+    async def link_conversation_to_patient(self, conversation_id: int, patient_id: int) -> None:
+        await self._db.link_conversation_to_patient(conversation_id, patient_id)
+        _log("NeonDB WRITE", f"conversation {conversation_id} linked → patient {patient_id}", GREEN)
+
     async def register_patient(self, phone: str, first_name: str, gestational_stage: str, verbal_consent_given: bool):
         result = await self._db.register_patient(phone, first_name, gestational_stage, verbal_consent_given)
         _log("NeonDB WRITE", f"patient registered — {first_name}, {gestational_stage}", GREEN)
