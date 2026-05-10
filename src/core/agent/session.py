@@ -463,7 +463,7 @@ class ConversationSession:
         )
         system_prompt = base_system
         if self._rag_addendum:
-            system_prompt = base_system + "\n\n" + self._rag_addendum
+            system_prompt = base_system + [{"type": "text", "text": self._rag_addendum}]
 
         try:
             async for event in stream_turn(
