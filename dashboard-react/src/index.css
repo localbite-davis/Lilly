@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #6366f1;
+  --primary-soft: #eef2ff;
+  --secondary: #0ea5e9;
+  --danger: #ef4444;
+  --danger-soft: #fef2f2;
+  --warning: #f59e0b;
+  --warning-soft: #fffbeb;
+  --success: #10b981;
+  --success-soft: #ecfdf5;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+}
+
+body {
+  @apply bg-[#f8fafc] text-[#0f172a] font-sans;
+}
+
+@layer components {
+  .btn {
+    @apply px-5 py-2.5 rounded-xl text-[13px] font-semibold cursor-pointer transition-all duration-200 border-none flex items-center gap-2;
+  }
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-[#4f46e5] hover:scale-[1.02];
+  }
+  .btn-danger {
+    @apply bg-danger-soft text-danger hover:bg-[#fee2e2];
+  }
+  .btn-outline {
+    @apply bg-white border border-border text-text-muted hover:border-primary hover:text-primary;
+  }
+  
+  .card {
+    @apply bg-white rounded-[20px] border border-border p-8;
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+.timer-urgent {
+  @apply text-danger;
+  animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}

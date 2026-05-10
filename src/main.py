@@ -38,4 +38,4 @@ def health_check():
     return {"status": "healthy", "service": "Lily"}
 
 # Mount Dashboard UI (Static Files)
-app.mount("/", StaticFiles(directory="dashboard", html=True), name="dashboard")
+app.mount("/", StaticFiles(directory="dashboard-react/dist", html=True), name="dashboard")
