@@ -9,20 +9,18 @@ twilio==8.10.2
 # ── LLM ──────────────────────────────────────────────────────────────────────
 anthropic>=0.40.0
 
-# ── Speech-to-Text ───────────────────────────────────────────────────────────
-deepgram-sdk>=3.2.0
-
-# ── Text-to-Speech ───────────────────────────────────────────────────────────
-websockets>=12.0                 # used directly for ElevenLabs streaming WS
+# ── Speech (STT + TTS via ElevenLabs) ───────────────────────────────────────
+websockets>=12.0                 # ElevenLabs TTS WebSocket stream
+httpx>=0.27.0                    # ElevenLabs STT REST API (async)
 
 # ── Memory / Vector store ────────────────────────────────────────────────────
-pinecone>=3.0.0                  # new package name (was pinecone-client)
-langchain-openai>=0.1.0          # OpenAIEmbeddings used in vector_store.py
-openai>=1.3.5                    # transitive dep of langchain-openai
+pinecone>=3.0.0                  # Pinecone vector DB + native inference embeddings
 
 # ── Database ─────────────────────────────────────────────────────────────────
-SQLAlchemy==2.0.23
-psycopg2-binary==2.9.9
+SQLAlchemy>=2.0.23
+asyncpg>=0.29.0                  # async PostgreSQL driver for NeonDB
+psycopg2-binary>=2.9.9           # sync driver for FastAPI legacy routes
+aiosqlite>=0.20.0                # async SQLite for local dev without Postgres
 
 # ── Background tasks ─────────────────────────────────────────────────────────
 celery==5.3.4
@@ -30,8 +28,14 @@ redis==5.0.1
 
 # ── Utilities ────────────────────────────────────────────────────────────────
 pydantic>=2.5.2
+pydantic-settings>=2.2.0
 python-dotenv==1.0.0
+httpx>=0.27.0
+tenacity>=8.2.0
+structlog>=24.0.0
 
 # ── Testing ──────────────────────────────────────────────────────────────────
-pytest==7.4.3
-pytest-asyncio==0.23.6
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-mock>=3.12.0
+freezegun>=1.4.0
