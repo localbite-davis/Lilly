@@ -34,6 +34,7 @@ def make_session(db: MockDB, patient: MockPatient | None = None):
     )
     s.conversation_id = 1
     s._from_number = "+15550001234"
+    s._write_queue.start()  # start background worker for enqueued DB writes
 
     if patient:
         s.patient_id = patient.patient_id
@@ -57,6 +58,10 @@ async def test_log_symptom_happy(mock_db):
     s = make_session(mock_db, patient)
     result = await TOOL_HANDLERS["log_symptom"](s, {"symptom": "headache"})
     assert result.ok
+    # Symptom is in session memory immediately
+    assert "headache" in s._symptoms_logged
+    # DB write is queued — drain before checking the mock DB
+    await s._write_queue.drain()
     assert mock_db.symptoms[0]["symptom"] == "headache"
 
 
@@ -77,8 +82,10 @@ async def test_log_symptom_db_failure(mock_db, monkeypatch):
 
     monkeypatch.setattr(mock_db, "log_symptom", bad)
     result = await TOOL_HANDLERS["log_symptom"](s, {"symptom": "headache"})
-    assert not result.ok
-    assert result.error_code == "TOOL_HANDLER_ERROR"
+    # Tool returns ok=True immediately — DB failures are fire-and-forget,
+    # logged by the queue worker but not surfaced to Claude.
+    assert result.ok
+    assert "headache" in s._symptoms_logged
 
 
 # ---------------------------------------------------------------------------
@@ -92,6 +99,10 @@ async def test_log_vitals_happy(mock_db):
         "bp_systolic": 148, "bp_diastolic": 94, "source": "self_report"
     })
     assert result.ok
+    # Vitals in session memory immediately
+    assert s._vitals_logged["bp_systolic"] == 148
+    # Drain queue before checking mock DB
+    await s._write_queue.drain()
     assert mock_db.vitals[0]["bp_systolic"] == 148
 
 
@@ -112,8 +123,9 @@ async def test_log_vitals_db_failure(mock_db, monkeypatch):
 
     monkeypatch.setattr(mock_db, "log_vitals", bad)
     result = await TOOL_HANDLERS["log_vitals"](s, {"bp_systolic": 148, "source": "self_report"})
-    assert not result.ok
-    assert result.error_code == "TOOL_HANDLER_ERROR"
+    # Tool returns ok=True immediately — DB failure is swallowed by the queue worker.
+    assert result.ok
+    assert s._vitals_logged["bp_systolic"] == 148
 
 
 # ---------------------------------------------------------------------------
@@ -258,6 +270,7 @@ async def test_send_patient_sms_happy(mock_db):
     s = make_session(mock_db, patient)
     result = await TOOL_HANDLERS["send_patient_sms"](s, {"body": "Doctor will call soon."})
     assert result.ok
+    await s._write_queue.drain()
     assert mock_db.sms_sent[0]["body"] == "Doctor will call soon."
 
 
@@ -371,6 +384,7 @@ async def test_send_ec_sms_happy(mock_db):
     s = make_session(mock_db, patient)
     result = await TOOL_HANDLERS["send_emergency_contact_sms"](s, {"body": "Maria needs help."})
     assert result.ok
+    await s._write_queue.drain()
     assert mock_db.sms_sent[0]["to"] == "+15550009999"
 
 

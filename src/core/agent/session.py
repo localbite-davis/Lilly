@@ -76,6 +76,44 @@ class SessionState(str, Enum):
     ENDED = "ended"
 
 
+class AsyncWriteQueue:
+    """
+    Runs DB writes in a background asyncio task so tool handlers can return
+    immediately to Claude without blocking on network round-trips.
+
+    Usage:
+        queue.enqueue(db.log_symptom(...))   # fire-and-forget
+        await queue.drain()                  # call before closing the session
+    """
+
+    def __init__(self) -> None:
+        self._q: asyncio.Queue = asyncio.Queue()
+        self._task: asyncio.Task | None = None
+
+    def start(self) -> None:
+        self._task = asyncio.create_task(self._worker())
+
+    def enqueue(self, coro) -> None:
+        self._q.put_nowait(coro)
+
+    async def drain(self) -> None:
+        """Block until all queued writes complete."""
+        await self._q.join()
+        if self._task:
+            self._task.cancel()
+            self._task = None
+
+    async def _worker(self) -> None:
+        while True:
+            coro = await self._q.get()
+            try:
+                await coro
+            except Exception as exc:
+                log.error("write_queue_failed", exc_info=exc)
+            finally:
+                self._q.task_done()
+
+
 class ConversationSession:
     def __init__(
         self,
@@ -114,6 +152,7 @@ class ConversationSession:
         self.tts_factory = tts_factory   # public alias for tests
         self._db = db
         self._rules_engine = rules_engine
+        self._write_queue = AsyncWriteQueue()
         self._chunker = TextChunker(
             max_chars=settings.tts_chunk_max_chars,
             min_chars=settings.tts_chunk_min_chars,
@@ -123,7 +162,12 @@ class ConversationSession:
     # Public Layer-1-facing API
     # -----------------------------------------------------------------------
 
+    def enqueue(self, coro) -> None:
+        """Fire-and-forget a DB write coroutine. Runs in the background worker."""
+        self._write_queue.enqueue(coro)
+
     async def start(self, from_number: str, outbound_context: dict | None = None) -> None:
+        self._write_queue.start()
         self._from_number = from_number
         self.conversation_id = await self._db.create_conversation(
             patient_id=None,
@@ -188,6 +232,8 @@ class ConversationSession:
             self._cancel_brain_task_safely(),
             return_exceptions=True,
         )
+        await self._write_queue.drain()
+
         if not self._session_ended and self.conversation_id is not None:
             tier = "handle"
             if self.pending_classification:

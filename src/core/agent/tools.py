@@ -384,45 +384,40 @@ async def _tool_log_symptom(session: "ConversationSession", inp: dict) -> ToolRe
     data, err = _validate(_LogSymptomInput, inp)
     if err:
         return err
-    try:
-        await session._db.log_symptom(
-            conversation_id=session.conversation_id,
-            patient_id=session.patient_id,
-            symptom=data.symptom,
-        )
-        await session._db.audit("lily", "log_symptom", session.patient_id, session.conversation_id)
-        session._symptoms_logged.add(data.symptom)
-        return ToolResult(ok=True, data={"symptom": data.symptom})
-    except Exception as exc:
-        log.error("tool_log_symptom_failed", exc_info=exc)
-        return ToolResult(ok=False, error="Could not log symptom.", error_code="TOOL_HANDLER_ERROR")
+    # Update in-memory state immediately so Claude has it for triage.
+    # DB writes are queued in the background — no blocking on network I/O.
+    session._symptoms_logged.add(data.symptom)
+    session.enqueue(session._db.log_symptom(
+        conversation_id=session.conversation_id,
+        patient_id=session.patient_id,
+        symptom=data.symptom,
+    ))
+    session.enqueue(session._db.audit("lily", "log_symptom", session.patient_id, session.conversation_id))
+    return ToolResult(ok=True, data={"symptom": data.symptom})
 
 
 async def _tool_log_vitals(session: "ConversationSession", inp: dict) -> ToolResult:
     data, err = _validate(_LogVitalsInput, inp)
     if err:
         return err
-    try:
-        vitals_dict = {
-            k: v for k, v in {
-                "bp_systolic": data.bp_systolic,
-                "bp_diastolic": data.bp_diastolic,
-                "hr": data.hr,
-                "spo2": data.spo2,
-                "source": data.source,
-            }.items() if v is not None
-        }
-        await session._db.log_vitals(
-            conversation_id=session.conversation_id,
-            patient_id=session.patient_id,
-            vitals=vitals_dict,
-        )
-        await session._db.audit("lily", "log_vitals", session.patient_id, session.conversation_id)
-        session._vitals_logged.update({k: v for k, v in vitals_dict.items() if k != "source"})
-        return ToolResult(ok=True, data=vitals_dict)
-    except Exception as exc:
-        log.error("tool_log_vitals_failed", exc_info=exc)
-        return ToolResult(ok=False, error="Could not log vitals.", error_code="TOOL_HANDLER_ERROR")
+    vitals_dict = {
+        k: v for k, v in {
+            "bp_systolic": data.bp_systolic,
+            "bp_diastolic": data.bp_diastolic,
+            "hr": data.hr,
+            "spo2": data.spo2,
+            "source": data.source,
+        }.items() if v is not None
+    }
+    # Update in-memory state immediately; queue the DB write.
+    session._vitals_logged.update({k: v for k, v in vitals_dict.items() if k != "source"})
+    session.enqueue(session._db.log_vitals(
+        conversation_id=session.conversation_id,
+        patient_id=session.patient_id,
+        vitals=vitals_dict,
+    ))
+    session.enqueue(session._db.audit("lily", "log_vitals", session.patient_id, session.conversation_id))
+    return ToolResult(ok=True, data=vitals_dict)
 
 
 async def _tool_read_vitals_sms(session: "ConversationSession", inp: dict) -> ToolResult:
@@ -524,14 +519,10 @@ async def _tool_send_patient_sms(session: "ConversationSession", inp: dict) -> T
         return err
     if session._patient_context is None or not session._patient_context.found:
         return ToolResult(ok=False, error="No patient context loaded.", error_code="PRECONDITION_FAILED")
-    try:
-        phone = session._from_number
-        await session._db.send_sms(to_phone=phone, body=data.body)
-        await session._db.audit("lily", "send_patient_sms", session.patient_id, session.conversation_id)
-        return ToolResult(ok=True, data={"to": phone})
-    except Exception as exc:
-        log.error("tool_send_patient_sms_failed", exc_info=exc)
-        return ToolResult(ok=False, error="Could not send SMS.", error_code="TOOL_HANDLER_ERROR")
+    phone = session._from_number
+    session.enqueue(session._db.send_sms(to_phone=phone, body=data.body))
+    session.enqueue(session._db.audit("lily", "send_patient_sms", session.patient_id, session.conversation_id))
+    return ToolResult(ok=True, data={"to": phone})
 
 
 async def _tool_send_emergency_contact_sms(session: "ConversationSession", inp: dict) -> ToolResult:
@@ -540,14 +531,10 @@ async def _tool_send_emergency_contact_sms(session: "ConversationSession", inp: 
         return err
     if session._patient_context is None or not session._patient_context.emergency_contact_phone:
         return ToolResult(ok=False, error="No emergency contact on file.", error_code="PRECONDITION_FAILED")
-    try:
-        phone = session._patient_context.emergency_contact_phone
-        await session._db.send_sms(to_phone=phone, body=data.body)
-        await session._db.audit("lily", "send_emergency_contact_sms", session.patient_id, session.conversation_id)
-        return ToolResult(ok=True, data={"to": phone})
-    except Exception as exc:
-        log.error("tool_send_ec_sms_failed", exc_info=exc)
-        return ToolResult(ok=False, error="Could not send emergency contact SMS.", error_code="TOOL_HANDLER_ERROR")
+    phone = session._patient_context.emergency_contact_phone
+    session.enqueue(session._db.send_sms(to_phone=phone, body=data.body))
+    session.enqueue(session._db.audit("lily", "send_emergency_contact_sms", session.patient_id, session.conversation_id))
+    return ToolResult(ok=True, data={"to": phone})
 
 
 async def _tool_update_follow_up_flags(session: "ConversationSession", inp: dict) -> ToolResult:
