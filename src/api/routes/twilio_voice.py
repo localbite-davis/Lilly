@@ -1,41 +1,52 @@
+"""
+Twilio Media Streams WebSocket handler.
+
+Round trip:
+    Twilio WS → ElevenLabs STT → ConversationSession (Layer 2) → ElevenLabs TTS → Twilio WS
+
+Layer 2 (ConversationSession) owns:
+  - Patient lookup + context from NeonDB
+  - Pinecone memory retrieval
+  - Claude streaming with tool dispatch
+  - Triage logic
+  - Post-call summarization
+"""
+
+from __future__ import annotations
+
 import asyncio
 import base64
 import json
-import os
-from datetime import datetime
-from functools import partial
+import sys
 
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from twilio.twiml.voice_response import VoiceResponse, Connect
 
-from src.core.agent.llm_client import BrainManager
-from src.core.agent.prompts import LILY_SYSTEM_PROMPT, EXTRACT_SYMPTOMS_TOOL
-from src.core.agent.state import ConversationState
-from src.services.stt_deepgram import DeepgramSTT
-from src.services.tts_elevenlabs import ElevenLabsTTS
+from src.core.agent.session import ConversationSession
+from src.core.schemas import UserFinalPayload
+from src.db.real_db import RealDB
+from src.services.stt_elevenlabs import ElevenLabsSTT
+from src.services.tts_elevenlabs import ElevenLabsTTSFactory
 
 router = APIRouter()
 
-# Shared across calls — one instance is fine (stateless clients).
-_brain = BrainManager()
-_tts = ElevenLabsTTS()
-
-GREETING = (
-    "Hello, I'm Lily, your maternal health companion. "
-    "I'm here for you anytime. How are you feeling today?"
-)
+# callSid → caller phone number — populated on /incoming, consumed on /stream
+_pending_calls: dict[str, str] = {}
 
 
-# ---------------------------------------------------------------------------
-# Incoming call webhook — returns TwiML that opens a Media Stream WebSocket.
-# ---------------------------------------------------------------------------
+def _log(msg: str):
+    print(f"[lily] {msg}", flush=True)
+    sys.stdout.flush()
+
 
 @router.post("/incoming")
 async def handle_incoming_call(request: Request):
-    form_data = await request.form()
-    caller_number = form_data.get("From", "unknown")  # noqa: used for DB lookup below
-    # TODO: fetch Patient record by caller_number and pass patient_id to WS
+    form = await request.form()
+    call_sid = form.get("CallSid", "")
+    from_number = form.get("From", "unknown")
+    _pending_calls[call_sid] = from_number
+    _log(f"incoming call_sid={call_sid} from={from_number}")
 
     response = VoiceResponse()
     connect = Connect()
@@ -44,142 +55,106 @@ async def handle_incoming_call(request: Request):
     return HTMLResponse(content=str(response), media_type="application/xml")
 
 
-# ---------------------------------------------------------------------------
-# WebSocket endpoint — real-time STT → LLM → TTS pipeline.
-#
-# Three concurrent async tasks share two queues:
-#
-#   transcript_queue : DeepgramSTT → llm_tts_task
-#   audio_out_queue  : llm_tts_task → twilio_sender_task
-#
-# Task 1 · twilio_receiver  — reads Twilio media frames, pipes audio to Deepgram.
-# Task 2 · llm_tts          — waits for transcripts, calls LLM, streams TTS.
-# Task 3 · twilio_sender    — drains audio_out_queue, sends mulaw back to Twilio.
-# ---------------------------------------------------------------------------
-
 @router.websocket("/stream")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    _log("WebSocket connected")
 
     transcript_queue: asyncio.Queue[str | None] = asyncio.Queue()
     audio_out_queue: asyncio.Queue[bytes | None] = asyncio.Queue()
 
-    stt = DeepgramSTT(transcript_queue)
-    await stt.connect()
+    stream_sid: str | None = None
+    session: ConversationSession | None = None
+    stt: ElevenLabsSTT | None = None
 
-    # stream_sid is set when Twilio sends the "start" event.
-    stream_sid: dict[str, str] = {}
-
-    # Conversation state — patient_id=0 until DB lookup is wired in.
-    state = ConversationState(
-        call_sid="pending",
-        patient_id=0,
-        started_at=datetime.utcnow(),
-    )
-
-    # Send Lily's greeting immediately after the call connects.
-    asyncio.ensure_future(_speak(GREETING, audio_out_queue, state))
-
-    # ------------------------------------------------------------------
-    # Task 1: receive audio from Twilio, feed to Deepgram.
-    # ------------------------------------------------------------------
+    # ── Task 1: receive Twilio events ────────────────────────────────────────
     async def twilio_receiver():
+        nonlocal stream_sid, session, stt
         try:
             async for raw in websocket.iter_text():
                 msg = json.loads(raw)
                 event = msg.get("event")
 
                 if event == "start":
-                    sid = msg["start"]["streamSid"]
-                    state.call_sid = sid
-                    stream_sid["value"] = sid
+                    start_data = msg["start"]
+                    stream_sid = start_data["streamSid"]
+                    call_sid = start_data.get("callSid", "")
+                    from_number = _pending_calls.pop(call_sid, "unknown")
+                    _log(f"start stream_sid={stream_sid} from={from_number}")
+
+                    stt = ElevenLabsSTT(transcript_queue)
+                    await stt.connect()
+
+                    tts_factory = ElevenLabsTTSFactory(audio_out_queue, stt)
+                    session = ConversationSession(db=RealDB(), tts_factory=tts_factory)
+
+                    # start() fetches patient context from NeonDB + Pinecone,
+                    # then streams the greeting through Claude → TTS.
+                    asyncio.ensure_future(session.start(from_number=from_number))
 
                 elif event == "media":
-                    audio = base64.b64decode(msg["media"]["payload"])
-                    await stt.send_audio(audio)
+                    if stt:
+                        audio = base64.b64decode(msg["media"]["payload"])
+                        await stt.send_audio(audio)
 
                 elif event == "stop":
+                    _log("stop event received")
                     break
+
         except WebSocketDisconnect:
-            pass
+            _log("client disconnected")
+        except Exception as exc:
+            _log(f"receiver error: {exc!r}")
         finally:
-            await stt.close()
-            await transcript_queue.put(None)  # signal llm_tts to exit
+            if stt:
+                await stt.close()
+            await transcript_queue.put(None)
 
-    # ------------------------------------------------------------------
-    # Task 2: transcript → LLM → ElevenLabs TTS → audio_out_queue.
-    # ------------------------------------------------------------------
-    async def llm_tts():
-        system = LILY_SYSTEM_PROMPT.format(
-            patient_name="there",       # TODO: pull from patient record
-            date_context="unknown",
-            memory_summary="No prior calls.",
-        )
-        loop = asyncio.get_event_loop()
+    # ── Task 2: transcript → ConversationSession ─────────────────────────────
+    async def llm_loop():
+        try:
+            while True:
+                transcript = await transcript_queue.get()
+                if transcript is None:
+                    break
+                if session is None:
+                    continue
 
-        while True:
-            transcript = await transcript_queue.get()
-            if transcript is None:
-                break
+                _log(f"user → '{transcript}'")
+                await session.on_user_final(UserFinalPayload(
+                    call_sid=stream_sid or "",
+                    transcript=transcript,
+                    confidence=1.0,
+                    is_final=True,
+                ))
+        except Exception as exc:
+            _log(f"llm_loop error: {exc!r}")
+        finally:
+            if session:
+                await session.on_call_stop("hangup")
+            await audio_out_queue.put(None)
 
-            state.add_message("user", transcript)
-
-            # BrainManager.generate_response is synchronous (blocking HTTP).
-            # Run it in a thread pool so the event loop stays free.
-            response = await loop.run_in_executor(
-                None,
-                partial(
-                    _brain.generate_response,
-                    system,
-                    state.message_history,
-                    [EXTRACT_SYMPTOMS_TOOL],
-                ),
-            )
-
-            # Tool calls are handled by the triage module — not our concern here.
-            if response["type"] != "text":
-                continue
-
-            reply_text = response["content"]
-            state.add_message("assistant", reply_text)
-            await _speak(reply_text, audio_out_queue, state)
-
-        await audio_out_queue.put(None)  # signal twilio_sender to exit
-
-    # ------------------------------------------------------------------
-    # Task 3: drain audio_out_queue and send mulaw frames back to Twilio.
-    # ------------------------------------------------------------------
+    # ── Task 3: audio out → Twilio ───────────────────────────────────────────
     async def twilio_sender():
-        while True:
-            chunk = await audio_out_queue.get()
-            if chunk is None:
-                break
-            sid = stream_sid.get("value")
-            if not sid:
-                continue  # stream_sid not yet set; discard (shouldn't happen for greeting)
-            await websocket.send_text(json.dumps({
-                "event": "media",
-                "streamSid": sid,
-                "media": {"payload": base64.b64encode(chunk).decode()},
-            }))
+        sent = 0
+        try:
+            while True:
+                chunk = await audio_out_queue.get()
+                if chunk is None:
+                    break
+                if not stream_sid:
+                    continue
+                try:
+                    await websocket.send_text(json.dumps({
+                        "event": "media",
+                        "streamSid": stream_sid,
+                        "media": {"payload": base64.b64encode(chunk).decode()},
+                    }))
+                    sent += 1
+                except (RuntimeError, WebSocketDisconnect):
+                    break
+        finally:
+            _log(f"sender done — {sent} chunks sent")
 
-    await asyncio.gather(twilio_receiver(), llm_tts(), twilio_sender())
-
-
-# ---------------------------------------------------------------------------
-# Helper: synthesize text and drain chunks into the shared audio queue.
-# ---------------------------------------------------------------------------
-
-async def _speak(text: str, audio_out_queue: asyncio.Queue, state: ConversationState):
-    """
-    Runs ElevenLabs synthesis and forwards every audio chunk directly into
-    audio_out_queue. The sentinel `None` from ElevenLabsTTS is consumed here
-    so the sender never sees a premature termination signal.
-    """
-    local_queue: asyncio.Queue[bytes | None] = asyncio.Queue()
-    await _tts.synthesize(text, local_queue)
-    while True:
-        chunk = await local_queue.get()
-        if chunk is None:
-            break
-        await audio_out_queue.put(chunk)
+    await asyncio.gather(twilio_receiver(), llm_loop(), twilio_sender())
+    _log("session ended")
