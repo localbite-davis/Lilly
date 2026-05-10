@@ -4,7 +4,7 @@ from src.db.session import get_db
 from src.db.models.queue import DoctorQueue, EscalationTimer
 from src.db.models.patient import Patient
 from src.db.models.encounters import StandingOrder, Encounter
-from src.services.telephony import trigger_emergency_callback
+from src.services.telephony import trigger_emergency_callback, send_decision_notification, trigger_decision_call
 
 router = APIRouter()
 
@@ -48,8 +48,9 @@ def get_doctor_queue(db: Session = Depends(get_db)):
     return results
 
 @router.post("/cases/{item_id}/{action}")
-def handle_case_action(item_id: int, action: str, db: Session = Depends(get_db)):
+def handle_case_action(item_id: int, action: str, data: dict = {}, db: Session = Depends(get_db)):
     """Doctor performs an action on a case (approve, escalate, or note)."""
+    note = data.get("note", "")
     queue_item = db.query(DoctorQueue).filter(DoctorQueue.id == item_id).first()
     if not queue_item:
         raise HTTPException(status_code=404, detail="Queue item not found")
@@ -69,9 +70,17 @@ def handle_case_action(item_id: int, action: str, db: Session = Depends(get_db))
             trigger_emergency_callback(patient.phone_number)
     elif action == "note":
         # Just logging for now
-        print(f"Note added to case {item_id}")
+        print(f"Note added to case {item_id}: {note}")
     else:
         raise HTTPException(status_code=400, detail="Invalid action")
+
+    # Notify patient of the decision (for approve/escalate)
+    if action in ["approve", "escalate"]:
+        patient = db.query(Patient).filter(Patient.id == queue_item.patient_id).first()
+        if patient:
+            # Send SMS and initiate an automated voice call
+            send_decision_notification(patient.phone_number, action, note)
+            trigger_decision_call(patient.phone_number, action, note)
 
     db.commit()
     return {"status": "success"}

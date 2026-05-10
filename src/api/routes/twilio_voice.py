@@ -197,3 +197,33 @@ async def websocket_endpoint(websocket: WebSocket):
 
     await asyncio.gather(twilio_receiver(), llm_loop(), twilio_sender())
     _log("session ended")
+
+
+@router.post("/decision/{decision_type}")
+async def handle_decision_call(decision_type: str, request: Request):
+    """
+    TwiML endpoint for automated decision calls initiated by the doctor dashboard.
+    """
+    # Note: We can pass data via query params when creating the call
+    params = request.query_params
+    note = params.get("note", "")
+    
+    response = VoiceResponse()
+    
+    # We use a calm, professional voice for Lily's automated decision relay
+    if decision_type == "approve":
+        msg = "Hello, this is Lily. Your clinical team has reviewed your recent vitals and symptoms. Your current care plan is authorized. Please continue following your existing guidance."
+    elif decision_type == "escalate":
+        msg = "Hello, this is Lily. This is an urgent update regarding your clinical review. Your medical team has requested an immediate escalation to Labor and Delivery. Please proceed to your nearest medical center immediately."
+    else:
+        msg = "Hello, this is Lily. We have an update regarding your clinical status."
+
+    response.say(msg, voice='Polly.Amy', language='en-GB')
+    
+    if note:
+        response.say("The doctor also included the following instruction for you.")
+        response.say(note, voice='Polly.Amy', language='en-GB')
+    
+    response.say("Take care. Goodbye.")
+    
+    return HTMLResponse(content=str(response), media_type="application/xml")
