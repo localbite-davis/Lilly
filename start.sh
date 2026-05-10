@@ -111,7 +111,7 @@ if $USE_DOCKER; then
     fi
 else
     warn "--no-docker: using SQLite (lily_local.db) and skipping Celery worker."
-    export DATABASE_URL="${DATABASE_URL:-sqlite:///./lily_local.db}"
+    export DATABASE_URL="${DATABASE_URL:-sqlite+aiosqlite:///./lily_local.db}"
 fi
 
 # Build React Dashboard

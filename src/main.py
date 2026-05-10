@@ -17,6 +17,18 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Ensure tables exist (SQLite/Local)
+from src.db.session import Base, sync_engine
+from src.db.models.patient import Patient
+from src.db.models.vitals import Vitals, SMSVitals, SymptomLog
+from src.db.models.encounters import Conversation, StandingOrder, FollowUpFlag, DoctorReview, SMSLog
+from src.db.models.queue import DoctorQueue, EscalationTimer
+
+@app.on_event("startup")
+def configure_db():
+    Base.metadata.create_all(bind=sync_engine)
+
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
