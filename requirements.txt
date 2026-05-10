@@ -1,17 +1,37 @@
-fastapi==0.104.1
-uvicorn==0.24.0
+# ── Web framework ────────────────────────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0        # [standard] pulls in websockets + httptools
+python-multipart==0.0.9          # required for request.form() in FastAPI
+
+# ── Telephony ────────────────────────────────────────────────────────────────
 twilio==8.10.2
-openai==1.3.5
-anthropic==0.6.1
-langchain==0.0.339
-langchain-core==0.0.6
-pinecone-client==2.2.4
+
+# ── LLM ──────────────────────────────────────────────────────────────────────
+anthropic>=0.40.0
+
+# ── Speech-to-Text ───────────────────────────────────────────────────────────
+deepgram-sdk>=3.2.0
+
+# ── Text-to-Speech ───────────────────────────────────────────────────────────
+websockets>=12.0                 # used directly for ElevenLabs streaming WS
+
+# ── Memory / Vector store ────────────────────────────────────────────────────
+pinecone>=3.0.0                  # new package name (was pinecone-client)
+langchain-openai>=0.1.0          # OpenAIEmbeddings used in vector_store.py
+openai>=1.3.5                    # transitive dep of langchain-openai
+
+# ── Database ─────────────────────────────────────────────────────────────────
 SQLAlchemy==2.0.23
 psycopg2-binary==2.9.9
+
+# ── Background tasks ─────────────────────────────────────────────────────────
 celery==5.3.4
 redis==5.0.1
-deepgram-sdk==2.12.0
-elevenlabs==0.2.27
+
+# ── Utilities ────────────────────────────────────────────────────────────────
+pydantic>=2.5.2
 python-dotenv==1.0.0
+
+# ── Testing ──────────────────────────────────────────────────────────────────
 pytest==7.4.3
-pydantic==2.5.2
+pytest-asyncio==0.23.6
