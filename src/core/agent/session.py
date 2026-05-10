@@ -43,6 +43,15 @@ from src.core.agent.interfaces import (
 )
 from src.core.agent.prompts import build_system_prompt
 from src.core.agent.tools import TOOL_DEFINITIONS, TOOL_HANDLERS
+
+# RAG is best-effort — if the knowledge_base module or its deps are missing,
+# the call should still work, just without retrieved context.
+try:
+    from knowledge_base.retrieve import rag_for_turn  # type: ignore
+    _RAG_AVAILABLE = True
+except Exception:  # pragma: no cover — module isn't on the import path or chroma not built
+    rag_for_turn = None  # type: ignore
+    _RAG_AVAILABLE = False
 from src.core.agent.tts_bridge import TextChunker
 from src.core.schemas import (
     PatientContext,
@@ -142,8 +151,13 @@ class ConversationSession:
         self._follow_up_flags: list[str] = []
         self._session_ended: bool = False
         self._consecutive_validation_failures: dict[str, int] = {}
-        self._language: str = settings.default_language   
+        self._language: str = settings.default_language
         self._language_locked: bool = False
+
+        # RAG addendum for the current user turn — set in on_user_final, read
+        # in _stream_one_response, persists through tool-resolution loops so
+        # follow-up Claude calls in the same turn keep the same context.
+        self._rag_addendum: str = ""
 
         self.tts_stream: TTSStreamLike | None = None
         self._brain_task: asyncio.Task | None = None
@@ -215,6 +229,13 @@ class ConversationSession:
                 language=self._language,
             )
         self.message_history.append({"role": "user", "content": payload.transcript})
+
+        # Run RAG retrieval BEFORE the brain turn. Best-effort — if classify
+        # or retrieve fails, we proceed without retrieved context rather than
+        # break the call. Smalltalk turns return has_context=False and we
+        # skip injection (saves ~150ms per turn).
+        self._rag_addendum = await self._compute_rag_addendum(payload.transcript)
+
         await self._run_brain_turn()
 
     async def on_user_interim(self, partial_text: str) -> None:
@@ -305,6 +326,44 @@ class ConversationSession:
         return "\n".join(lines)
 
     # -----------------------------------------------------------------------
+    # Internal: RAG retrieval for the current user turn
+    # -----------------------------------------------------------------------
+
+    async def _compute_rag_addendum(self, user_text: str) -> str:
+        """
+        Best-effort RAG retrieval. Returns an addendum string to append to
+        the system prompt, or "" on smalltalk turns / errors.
+
+        Smalltalk turns ("hey lily", "thanks", "okay") classify as
+        non-clinical / non-navigational / non-emotional and skip retrieval
+        entirely — saves ~150ms per turn and avoids polluting the prompt.
+        """
+        if not _RAG_AVAILABLE or rag_for_turn is None:
+            return ""
+        try:
+            rag = await rag_for_turn(user_text, base_system_prompt="")
+        except Exception as exc:
+            log.warning("rag_failed", call_sid=self.call_sid, error=repr(exc))
+            return ""
+
+        if not rag.has_context or not rag.addendum:
+            log.info("rag_skipped", call_sid=self.call_sid, reason="smalltalk")
+            return ""
+
+        log.info(
+            "rag_injected",
+            call_sid=self.call_sid,
+            chunks=len(rag.chunks),
+            classification=(
+                f"clinical={rag.classification.is_clinical}"
+                f" nav={rag.classification.is_navigational}"
+                f" emotional={rag.classification.is_emotional}"
+            ),
+            actions=rag.action_types_retrieved,
+        )
+        return rag.addendum
+
+    # -----------------------------------------------------------------------
     # Internal: the turn loop
     # -----------------------------------------------------------------------
 
@@ -388,14 +447,21 @@ class ConversationSession:
         self._brain_task = asyncio.current_task()
         suppressed_in_handoff = False
 
+        # Build the system prompt and append the RAG addendum if we
+        # retrieved any (only set on clinical/navigational/emotional turns).
+        base_system = build_system_prompt(
+            self._patient_context or PatientContext(found=False),
+            language=self._language,
+        )
+        system_prompt = base_system
+        if self._rag_addendum:
+            system_prompt = base_system + "\n\n" + self._rag_addendum
+
         try:
             async for event in stream_turn(
                 client=self._anthropic,
                 model=settings.lily_model,
-                system=build_system_prompt(
-                    self._patient_context or PatientContext(found=False),
-                    language=self._language,
-                ),
+                system=system_prompt,
                 messages=self.message_history,
                 tools=TOOL_DEFINITIONS,
                 max_tokens=settings.brain_max_tokens,
