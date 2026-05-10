@@ -36,3 +36,30 @@ EXTRACT_SYMPTOMS_TOOL = {
         }
     }
 }
+
+CLASSIFY_CASE_TOOL = {
+    "name": "classify_case",
+    "description": "Call this tool to evaluate extracted symptoms and vitals against the deterministic rules engine. You must call this before deciding what to say at the end of an information-gathering arc.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "symptoms": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "List of normalized symptoms."
+            },
+            "vitals": {
+                "type": "object",
+                "description": "Dictionary of vitals. E.g. {'bp_systolic': 148, 'bp_diastolic': 94}"
+            },
+            "gestational_weeks": {"type": "number"},
+            "postpartum_days": {"type": "number"},
+            "flags": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Any special flags like 'maria_unable_to_classify'."
+            }
+        },
+        "required": ["symptoms", "vitals"]
+    }
+}

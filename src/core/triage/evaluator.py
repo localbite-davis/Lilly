@@ -1,43 +1,64 @@
-from typing import List, Dict
-from src.core.triage.rules_engine import ACOG_WARNING_SIGNS, TriageTier
+from typing import List, Dict, Optional, Literal
+from dataclasses import dataclass
+from src.core.triage.rules_engine import RULES
 
-class TriageEvaluator:
+@dataclass
+class TriageInput:
+    symptoms: List[str]
+    vitals: Dict[str, float]
+    gestational_weeks: Optional[int]
+    postpartum_days: Optional[int]
+    flags: List[str]
+
+@dataclass
+class TriageOutput:
+    tier: Literal["handle", "hand_up", "hand_off"]
+    reason: str
+    triggered_rules: List[str]
+    uncertainty: bool
+    next_action: str
+
+def classify_case(triage_input: TriageInput) -> TriageOutput:
     """
     Evaluates extracted symptoms against deterministic ACOG rules.
     This prevents LLM hallucinations in critical medical decisions.
     """
-    
-    @staticmethod
-    def evaluate_symptoms(symptoms: List[str], vitals: Dict[str, float] = None) -> TriageTier:
-        """
-        Returns the highest triage tier based on symptoms and vitals.
-        """
-        highest_tier = TriageTier.HANDLE
-        
-        # Check standard symptoms
-        for symptom in symptoms:
-            if symptom in ACOG_WARNING_SIGNS:
-                tier = ACOG_WARNING_SIGNS[symptom]
-                if tier == TriageTier.HAND_OFF:
-                    return TriageTier.HAND_OFF # Highest severity, immediate return
-                if tier == TriageTier.HAND_UP:
-                    highest_tier = TriageTier.HAND_UP
-                    
-        # Check vitals if provided
-        if vitals:
-            sys_bp = vitals.get("systolic_bp")
-            dia_bp = vitals.get("diastolic_bp")
-            
-            if sys_bp is not None:
-                if sys_bp >= 160: return TriageTier.HAND_OFF
-                if sys_bp >= 140: highest_tier = TriageTier.HAND_UP
-                
-            if dia_bp is not None:
-                if dia_bp >= 110: return TriageTier.HAND_OFF
-                if dia_bp >= 90: highest_tier = TriageTier.HAND_UP
-                
-            temp = vitals.get("temperature")
-            if temp is not None and temp >= 100.4:
-                highest_tier = TriageTier.HAND_UP if highest_tier != TriageTier.HAND_OFF else TriageTier.HAND_OFF
+    highest_tier = "handle"
+    triggered_rule_ids = []
+    citations = []
 
-        return highest_tier
+    # Map tier severity
+    tier_weight = {"handle": 1, "hand_up": 2, "hand_off": 3}
+
+    v = triage_input.vitals or {}
+    s = triage_input.symptoms or []
+    f = triage_input.flags or []
+
+    for rule in RULES:
+        if rule.fires_when(v, s, f):
+            triggered_rule_ids.append(rule.id)
+            citations.append(rule.cite)
+            if tier_weight[rule.tier] > tier_weight[highest_tier]:
+                highest_tier = rule.tier
+
+    reason = "Routine case, handled safely."
+    next_action = "Provide comfort and education."
+    uncertainty = False
+
+    if highest_tier == "hand_off":
+        reason = f"Emergency symptoms detected: {', '.join(citations)}"
+        next_action = "Initiate 911 conference and emergency contacts."
+    elif highest_tier == "hand_up":
+        reason = f"Clinical review required: {', '.join(citations)}"
+        next_action = "Route to physician queue (20 min SLA)."
+        
+    if "maria_unable_to_classify" in f:
+        uncertainty = True
+
+    return TriageOutput(
+        tier=highest_tier,
+        reason=reason,
+        triggered_rules=triggered_rule_ids,
+        uncertainty=uncertainty,
+        next_action=next_action
+    )
