@@ -21,6 +21,7 @@ async def create_tables() -> None:
     import src.db.models.patient      # noqa: F401
     import src.db.models.encounters   # noqa: F401
     import src.db.models.vitals       # noqa: F401
+    import src.db.models.queue        # noqa: F401
 
     from src.db.session import Base, async_engine
 

@@ -23,11 +23,15 @@ ACOG_WARNING_SIGNS: dict[str, TriageTier] = {
     # Hand-Off (Immediate Emergency)
     "seizures": TriageTier.HAND_OFF,
     "heavy_bleeding": TriageTier.HAND_OFF,
+    "heavy_vaginal_bleeding": TriageTier.HAND_OFF,
+    "postpartum_hemorrhage": TriageTier.HAND_OFF,
+    "postpartum_bleeding_heavy": TriageTier.HAND_OFF,
     "chest_pain": TriageTier.HAND_OFF,
     "shortness_of_breath": TriageTier.HAND_OFF,
     "extreme_pain": TriageTier.HAND_OFF,
     "systolic_bp_over_160": TriageTier.HAND_OFF,
     "diastolic_bp_over_110": TriageTier.HAND_OFF,
+    "unable_to_self_transport_emergency": TriageTier.HAND_OFF,
 
     # Hand-Up (Consult Physician within 20 mins)
     "fever_over_100_4": TriageTier.HAND_UP,
@@ -39,6 +43,11 @@ ACOG_WARNING_SIGNS: dict[str, TriageTier] = {
     "decreased_fetal_movement": TriageTier.HAND_UP,
     "systolic_bp_over_140": TriageTier.HAND_UP,
     "diastolic_bp_over_90": TriageTier.HAND_UP,
+    "vaginal_bleeding": TriageTier.HAND_UP,
+    "vaginal_discharge_abnormal": TriageTier.HAND_UP,
+    "vaginal_discharge_pungent_smell": TriageTier.HAND_UP,
+    "preterm_labor_signs": TriageTier.HAND_UP,
+    "reduced_fetal_movement": TriageTier.HAND_UP,
 }
 
 _TIER_WEIGHT = {TriageTier.HANDLE: 1, TriageTier.HAND_UP: 2, TriageTier.HAND_OFF: 3}

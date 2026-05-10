@@ -539,14 +539,22 @@ async def _tool_request_doctor_review(session: "ConversationSession", inp: dict)
     if err:
         return err
     try:
+        from datetime import datetime, timezone
+        from src.core.schemas import CasePacket, VitalsPayload
         vitals_snapshot = None
         if session._vitals_logged:
-            vitals_snapshot = {**session._vitals_logged}
-        from src.core.schemas import CasePacket
+            # _vitals_logged has source stripped (log_vitals removes it before storing).
+            # Re-attach source="self_report" so VitalsPayload validates correctly.
+            vitals_snapshot = VitalsPayload(
+                source="self_report",
+                received_at=datetime.now(timezone.utc),
+                **{k: v for k, v in session._vitals_logged.items()
+                   if k in ("bp_systolic", "bp_diastolic", "hr", "spo2")},
+            )
         packet = CasePacket(
             patient_first_name=data.patient_first_name,
             gestational_stage=data.gestational_stage,
-            vitals_snapshot=None,
+            vitals_snapshot=vitals_snapshot,
             acog_signs=data.acog_signs,
             lily_recommendation=data.lily_recommendation,
             specific_question=data.specific_question,

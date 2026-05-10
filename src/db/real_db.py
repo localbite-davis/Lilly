@@ -25,6 +25,7 @@ from src.db.models.encounters import (
     StandingOrder,
 )
 from src.db.models.patient import Patient
+from src.db.models.queue import DoctorQueue, EscalationTimer
 from src.db.models.vitals import SMSVitals, SymptomLog, Vitals
 from src.db.session import get_async_session
 
@@ -196,13 +197,38 @@ class RealDB:
     async def request_doctor_review(
         self, conversation_id: int, patient_id: int | None, case_packet: dict
     ) -> int:
+        from datetime import timedelta
         async with get_async_session() as session:
+            # Detailed audit record (existing)
             review = DoctorReview(
                 conversation_id=conversation_id,
                 patient_id=patient_id,
                 case_packet_json=json.dumps(case_packet),
             )
             session.add(review)
+
+            # Doctor dashboard queue entry — this is what the portal reads
+            symptoms_text = ", ".join(case_packet.get("acog_signs") or []) or "See case notes"
+            vitals = case_packet.get("vitals_snapshot")
+            queue_item = DoctorQueue(
+                patient_id=patient_id,
+                encounter_id=conversation_id,
+                symptoms=symptoms_text,
+                vitals=json.dumps(vitals) if vitals else None,
+                question=case_packet.get("specific_question", ""),
+                status="pending",
+            )
+            session.add(queue_item)
+            await session.flush()
+            await session.refresh(queue_item)
+
+            # Escalation timer — auto-escalate if doctor doesn't act in 20 min
+            timer = EscalationTimer(
+                doctor_queue_id=queue_item.id,
+                expires_at=datetime.now(timezone.utc) + timedelta(minutes=20),
+                status="pending",
+            )
+            session.add(timer)
             await session.flush()
             await session.refresh(review)
             return review.id

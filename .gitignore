@@ -31,3 +31,10 @@ received_audio.wav
 
 # Local dev scripts — machine-specific, not for CI
 start_local.sh
+
+node_modules/
+dist/
+build/
+*.log
+*.tmp
+*.bak

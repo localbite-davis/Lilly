@@ -67,37 +67,34 @@ def send_decision_notification(patient_phone: str, decision_type: str, note: str
     except Exception as e:
         print(f"   -> Failed to send SMS: {e}")
 
-def trigger_decision_call(patient_phone: str, decision_type: str, note: str = ""):
+def trigger_decision_call(patient_phone: str, decision_type: str, note: str = "", base_url: str | None = None):
     """
-    Initiates an outbound phone call to the patient to verbally relay
-    the doctor's clinical decision using Lily's voice.
+    Initiates an outbound call to the patient to relay the doctor's decision
+    using Lily's ElevenLabs voice. base_url must be the public Cloudflare/ngrok
+    URL so Twilio can reach the TwiML + TTS endpoints.
     """
+    import urllib.parse
     account_sid = os.getenv("TWILIO_ACCOUNT_SID", "mock_sid")
     auth_token = os.getenv("TWILIO_AUTH_TOKEN", "mock_token")
     twilio_number = os.getenv("TWILIO_PHONE_NUMBER", "+1234567890")
-    
-    # We need the callback URL for the TwiML. In a production setting, 
-    # this would be the public URL (ngrok).
-    base_url = os.getenv("APP_BASE_URL", "http://localhost:8000")
+
+    if base_url is None:
+        base_url = os.getenv("APP_BASE_URL", "http://localhost:8000")
+
     twiml_url = f"{base_url}/api/twilio/voice/decision/{decision_type}"
     if note:
-        import urllib.parse
         twiml_url += f"?note={urllib.parse.quote(note)}"
 
-    print(f"📞 [TWILIO] Triggering AUTOMATED DECISION CALL to {patient_phone}...")
+    print(f"📞 [TWILIO] Triggering decision call to {patient_phone} ({decision_type})...")
     print(f"   -> TwiML URL: {twiml_url}")
 
-    if account_sid == "mock_sid" or account_sid == "your_twilio_account_sid":
-        print("   -> Mocked successfully. (Configure real Twilio keys to trigger actual voice call).")
+    if account_sid in ("mock_sid", "your_twilio_account_sid"):
+        print("   -> Mocked. Set real Twilio keys to trigger actual voice call.")
         return
 
     client = Client(account_sid, auth_token)
     try:
-        call = client.calls.create(
-            to=patient_phone,
-            from_=twilio_number,
-            url=twiml_url
-        )
-        print(f"   -> Decision call initiated successfully! SID: {call.sid}")
+        call = client.calls.create(to=patient_phone, from_=twilio_number, url=twiml_url)
+        print(f"   -> Decision call initiated! SID: {call.sid}")
     except Exception as e:
         print(f"   -> Failed to initiate decision call: {e}")

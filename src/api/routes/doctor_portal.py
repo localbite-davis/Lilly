@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+import json as _json
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from src.db.session import get_db
 from src.db.models.queue import DoctorQueue, EscalationTimer
@@ -6,14 +8,38 @@ from src.db.models.patient import Patient
 from src.db.models.encounters import StandingOrder, Encounter
 from src.services.telephony import trigger_emergency_callback, send_decision_notification, trigger_decision_call
 
+
+def _parse_vitals(vitals_json: str | None) -> dict:
+    """Parse DoctorQueue.vitals JSON into display strings for the dashboard."""
+    if not vitals_json:
+        return {"bp": "—", "hr": "—", "spo2": "—", "bp_alert": False}
+    try:
+        v = _json.loads(vitals_json)
+    except Exception:
+        return {"bp": "—", "hr": "—", "spo2": "—", "bp_alert": False}
+    sys_bp = v.get("bp_systolic")
+    dia_bp = v.get("bp_diastolic")
+    hr = v.get("hr")
+    spo2 = v.get("spo2")
+    bp_str = f"{sys_bp}/{dia_bp}" if sys_bp and dia_bp else "—"
+    hr_str = str(hr) if hr else "—"
+    spo2_str = f"{spo2}%" if spo2 else "—"
+    bp_alert = bool(sys_bp and sys_bp >= 140) or bool(dia_bp and dia_bp >= 90)
+    return {"bp": bp_str, "hr": hr_str, "spo2": spo2_str, "bp_alert": bp_alert}
+
 router = APIRouter()
 
 @router.get("/queue")
 def get_doctor_queue(db: Session = Depends(get_db)):
     """Returns all pending HAND-UP cases for the doctor dashboard."""
-    pending_items = db.query(DoctorQueue, Patient, Encounter).join(Patient).join(Encounter, DoctorQueue.encounter_id == Encounter.id).filter(
-        DoctorQueue.status == "pending"
-    ).all()
+    pending_items = (
+        db.query(DoctorQueue, Patient, Encounter)
+        .select_from(DoctorQueue)
+        .join(Patient, DoctorQueue.patient_id == Patient.id)
+        .join(Encounter, DoctorQueue.encounter_id == Encounter.id)
+        .filter(DoctorQueue.status == "pending")
+        .all()
+    )
 
     results = []
     for queue_item, patient, encounter in pending_items:
@@ -30,25 +56,26 @@ def get_doctor_queue(db: Session = Depends(get_db)):
             delta = timer.expires_at - now
             timer_seconds = int(delta.total_seconds())
 
+        vitals = _parse_vitals(queue_item.vitals)
         results.append({
             "id": queue_item.id,
             "patient_name": patient.first_name,
             "initials": patient.first_name[:2].upper() if patient.first_name else "P",
             "stage": patient.gestational_stage or ("Postpartum" if patient.is_postpartum else "Pregnant"),
-            "tier": encounter.tier_reached,
-            "bp": "148/94", # Mock vitals for now or extract from queue_item.vitals if JSON
-            "hr": "88",
-            "spo2": "98%",
-            "bp_alert": False,
-            "symptoms": (queue_item.symptoms or "").split(", "),
+            "tier": encounter.tier_reached or queue_item.status,
+            "bp": vitals["bp"],
+            "hr": vitals["hr"],
+            "spo2": vitals["spo2"],
+            "bp_alert": vitals["bp_alert"],
+            "symptoms": [s.strip() for s in (queue_item.symptoms or "").split(",") if s.strip()],
             "sbar": queue_item.question,
-            "timer": timer_seconds
+            "timer": timer_seconds,
         })
 
     return results
 
 @router.post("/cases/{item_id}/{action}")
-def handle_case_action(item_id: int, action: str, data: dict = {}, db: Session = Depends(get_db)):
+def handle_case_action(item_id: int, action: str, request: Request, data: dict = {}, db: Session = Depends(get_db)):
     """Doctor performs an action on a case (approve, escalate, or note)."""
     note = data.get("note", "")
     queue_item = db.query(DoctorQueue).filter(DoctorQueue.id == item_id).first()
@@ -78,9 +105,13 @@ def handle_case_action(item_id: int, action: str, data: dict = {}, db: Session =
     if action in ["approve", "escalate"]:
         patient = db.query(Patient).filter(Patient.id == queue_item.patient_id).first()
         if patient:
-            # Send SMS and initiate an automated voice call
+            # Derive public base URL from incoming request so Twilio can reach
+            # the TwiML + TTS endpoints (works with Cloudflare/ngrok tunnels).
+            scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
+            host = request.headers.get("host", request.url.netloc)
+            public_base_url = f"{scheme}://{host}"
             send_decision_notification(patient.phone_number, action, note)
-            trigger_decision_call(patient.phone_number, action, note)
+            trigger_decision_call(patient.phone_number, action, note, base_url=public_base_url)
 
     db.commit()
     return {"status": "success"}
@@ -105,6 +136,17 @@ def get_past_cases(db: Session = Depends(get_db)):
         })
     return results
 
+@router.get("/patients")
+def get_patients(db: Session = Depends(get_db)):
+    """Returns all patients for dropdowns."""
+    patients = db.query(Patient).order_by(Patient.first_name).all()
+    return [{
+        "id": p.id,
+        "first_name": p.first_name,
+        "last_name": p.last_name,
+        "gestational_stage": p.gestational_stage or ("Postpartum" if p.is_postpartum else "Pregnant"),
+    } for p in patients]
+
 @router.get("/standing-orders")
 def get_standing_orders(db: Session = Depends(get_db)):
     """Returns all active standing orders."""
@@ -120,10 +162,12 @@ def get_standing_orders(db: Session = Depends(get_db)):
 @router.post("/standing-orders")
 def create_standing_order(data: dict, db: Session = Depends(get_db)):
     """Creates a new standing order."""
-    # Note: in a real app we'd map the name to a patient_id
-    # For this hackathon demo, we'll assume patient 1
+    patient_id = data.get("patient_id")
+    if not patient_id:
+        patient = db.query(Patient).first()
+        patient_id = patient.id if patient else 1
     new_order = StandingOrder(
-        patient_id=1,
+        patient_id=int(patient_id),
         condition=data.get("condition"),
         intervention=data.get("intervention"),
         doctor_name="Dr. Demo"

@@ -199,31 +199,61 @@ async def websocket_endpoint(websocket: WebSocket):
     _log("session ended")
 
 
+@router.get("/tts-audio")
+async def tts_audio(text: str, request: Request):
+    """
+    Synthesizes text with Lily's ElevenLabs voice and returns audio/mpeg bytes.
+    Referenced by <Play> in decision TwiML so Twilio uses Lily's voice, not Polly.
+    """
+    import httpx as _httpx
+    from fastapi.responses import Response
+    voice_id = settings.lily_voice_id
+    api_key = settings.elevenlabs_api_key
+    async with _httpx.AsyncClient(timeout=20) as client:
+        r = await client.post(
+            f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+            headers={"xi-api-key": api_key},
+            json={
+                "text": text,
+                "model_id": "eleven_turbo_v2_5",
+                "voice_settings": {"stability": 0.45, "similarity_boost": 0.75},
+            },
+        )
+    return Response(content=r.content, media_type="audio/mpeg")
+
+
 @router.post("/decision/{decision_type}")
 async def handle_decision_call(decision_type: str, request: Request):
     """
-    TwiML endpoint for automated decision calls initiated by the doctor dashboard.
+    TwiML endpoint called by Twilio when the doctor dashboard triggers a callback.
+    Uses Lily's ElevenLabs voice via <Play> instead of Polly.
     """
-    # Note: We can pass data via query params when creating the call
-    params = request.query_params
-    note = params.get("note", "")
-    
-    response = VoiceResponse()
-    
-    # We use a calm, professional voice for Lily's automated decision relay
-    if decision_type == "approve":
-        msg = "Hello, this is Lily. Your clinical team has reviewed your recent vitals and symptoms. Your current care plan is authorized. Please continue following your existing guidance."
-    elif decision_type == "escalate":
-        msg = "Hello, this is Lily. This is an urgent update regarding your clinical review. Your medical team has requested an immediate escalation to Labor and Delivery. Please proceed to your nearest medical center immediately."
-    else:
-        msg = "Hello, this is Lily. We have an update regarding your clinical status."
+    import urllib.parse
+    note = request.query_params.get("note", "")
 
-    response.say(msg, voice='Polly.Amy', language='en-GB')
-    
+    if decision_type == "approve":
+        msg = (
+            "Hello, this is Lily. Your clinical team has reviewed your vitals and symptoms. "
+            "Your current care plan is authorized — please continue following your existing guidance."
+        )
+    elif decision_type == "escalate":
+        msg = (
+            "Hello, this is Lily. I have an important update for you. "
+            "Your medical team has asked you to go to Labor and Delivery right away. "
+            "Please head to your nearest medical center now. Help is ready for you."
+        )
+    else:
+        msg = "Hello, this is Lily. Your clinical team has reviewed your case and will be in touch soon."
+
     if note:
-        response.say("The doctor also included the following instruction for you.")
-        response.say(note, voice='Polly.Amy', language='en-GB')
-    
-    response.say("Take care. Goodbye.")
-    
+        msg += f" Your doctor also wanted me to tell you: {note}"
+    msg += " Take care."
+
+    # Build absolute TTS URL so Twilio can fetch it (host is the Cloudflare public URL)
+    scheme = request.headers.get("x-forwarded-proto", "https")
+    host = request.headers.get("host", "localhost:8000")
+    tts_url = f"{scheme}://{host}/api/twilio/voice/tts-audio?text={urllib.parse.quote(msg)}"
+
+    response = VoiceResponse()
+    response.play(tts_url)
     return HTMLResponse(content=str(response), media_type="application/xml")
