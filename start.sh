@@ -114,6 +114,11 @@ else
     export DATABASE_URL="${DATABASE_URL:-sqlite:///./lily_local.db}"
 fi
 
+# Build React Dashboard
+echo "[lily] Building React dashboard..."
+cd dashboard-react && npm install && npm run build
+cd ..
+
 # ── 4. FastAPI server ─────────────────────────────────────────────────────────
 label "Starting FastAPI server"
 

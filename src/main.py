@@ -37,5 +37,5 @@ app.include_router(doctor_portal.router, prefix="/api/portal", tags=["Doctor Por
 def health_check():
     return {"status": "healthy", "service": "Lily"}
 
-# StaticFiles must be mounted last — a mount at "/" catches everything not yet matched
-app.mount("/", StaticFiles(directory="dashboard", html=True), name="dashboard")
+# Mount Dashboard UI (Static Files)
+app.mount("/", StaticFiles(directory="dashboard-react/dist", html=True), name="dashboard")
