@@ -46,13 +46,22 @@ class ElevenLabsSTT:
         self._silence_run = 0
         self._chunks_seen = 0
         self._max_rms = 0
-        # Echo-cancellation guard: ignore all inbound audio until this monotonic
-        # timestamp. Set by the orchestrator while Lily is speaking so we don't
-        # transcribe her own voice bleeding back through the user's mic.
+        # Echo-cancellation guard: ignore inbound audio while Lily is speaking.
+        # start_mute() is called when TTS opens (mutes immediately).
+        # end_mute(duration) is called when TTS closes with the actual playback
+        # duration + buffer so echo tail is also suppressed.
         self._muted_until: float = 0.0
 
-    def mute_until(self, monotonic_ts: float):
-        self._muted_until = max(self._muted_until, monotonic_ts)
+    def start_mute(self) -> None:
+        """Mute indefinitely — call when TTS stream opens."""
+        self._muted_until = float("inf")
+        self._buffer.clear()
+        self._had_speech = False
+        self._silence_run = 0
+
+    def end_mute(self, tail_s: float) -> None:
+        """Lift mute after tail_s seconds — call when TTS stream closes."""
+        self._muted_until = time.monotonic() + tail_s
 
     async def connect(self):
         pass  # REST — no persistent connection needed
@@ -113,11 +122,16 @@ class ElevenLabsSTT:
 
         _log(f"flushing {len(audio_bytes)} bytes → ElevenLabs Scribe")
         text, detected_language = await self._transcribe(audio_bytes)
-        if text:
-            _log(f"transcript: '{text}' (language: {detected_language})")
-            await self._queue.put((text, detected_language))
-        else:
+        if not text:
             _log("empty transcript — skipping")
+            return
+        # Discard noise: single words / very short strings are almost always
+        # echo bleed, background noise, or a mulaw artefact — not real speech.
+        if len(text.strip()) < 8 or len(text.split()) < 2:
+            _log(f"discarding noise ({len(text.split())} word(s)): '{text}'")
+            return
+        _log(f"transcript: '{text}' (language: {detected_language})")
+        await self._queue.put((text, detected_language))
 
     async def _transcribe(self, mulaw_bytes: bytes) -> tuple[str, str]:
         wav_bytes = _mulaw_to_wav(mulaw_bytes)

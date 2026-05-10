@@ -130,6 +130,19 @@ async def websocket_endpoint(websocket: WebSocket):
                     continue
 
                 transcript, detected_language = item
+
+                # Drop echo that slipped through mute: after language lock,
+                # short transcripts in a different language are almost always
+                # Lily's own TTS voice being picked up through the phone.
+                if (
+                    session
+                    and session._language_locked
+                    and detected_language != session._language
+                    and len(transcript.split()) < 5
+                ):
+                    _log(f"dropping echo [{detected_language}]: '{transcript[:60]}'")
+                    continue
+
                 _log(f"user [{detected_language}] → '{transcript}'")
                 await session.on_user_final(UserFinalPayload(
                     call_sid=stream_sid or "",

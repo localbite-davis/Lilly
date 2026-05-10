@@ -130,6 +130,9 @@ class ElevenLabsTTSStream:
         }))
         self._total_bytes = 0
         self._active = True
+        # Mute STT immediately so Lily's voice never enters the buffer
+        if self._stt:
+            self._stt.start_mute()
         self._receiver_task = asyncio.create_task(self._receive_audio())
 
     async def _receive_audio(self) -> None:
@@ -146,9 +149,17 @@ class ElevenLabsTTSStream:
             pass
 
     async def _cleanup(self) -> None:
-        if self._stt and self._total_bytes > 0:
-            duration = self._total_bytes / 8000.0
-            self._stt.mute_until(time.monotonic() + duration + 0.5)
+        if self._stt:
+            if self._total_bytes > 0:
+                # Keep STT muted for remaining playback + echo tail.
+                # At this point all bytes are in audio_out_queue but not yet
+                # played — duration covers Twilio's drain time; 2.5s covers
+                # network jitter, Twilio playback buffer, and phone echo tail.
+                duration = self._total_bytes / 8000.0
+                self._stt.end_mute(duration + 2.5)
+            else:
+                # Nothing was sent — lift mute immediately
+                self._stt.end_mute(0.0)
         if self._ws:
             try:
                 await self._ws.close()
