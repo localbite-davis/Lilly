@@ -246,7 +246,50 @@ class ConversationSession:
                 )
             except Exception:
                 pass
+
+        # Generate summary and persist to Pinecone in the background.
+        # Only worth summarizing if there was actual conversation content.
+        if self.patient_id is not None and len(self.message_history) > 2:
+            asyncio.ensure_future(self._summarize_and_store())
+
         self.state = SessionState.ENDED
+
+    async def _summarize_and_store(self) -> None:
+        """Build transcript, summarize via Claude Haiku, save to Pinecone."""
+        from src.core.memory.summarizer import summarize_call, save_call_summary
+        try:
+            transcript = self._build_transcript()
+            tier = self.pending_classification.tier if self.pending_classification else "handle"
+            summary = await summarize_call(
+                transcript=transcript,
+                symptoms=list(self._symptoms_logged),
+                vitals=dict(self._vitals_logged),
+                tier=tier,
+            )
+            await save_call_summary(
+                patient_id=self.patient_id,
+                conversation_id=self.conversation_id,
+                summary=summary,
+            )
+            log.info("pinecone_summary_saved", patient_id=self.patient_id)
+        except Exception as exc:
+            log.warning("summarize_and_store_failed", exc_info=exc)
+
+    def _build_transcript(self) -> str:
+        """Flatten message_history into a readable transcript string."""
+        lines = []
+        for msg in self.message_history:
+            role = msg.get("role", "")
+            content = msg.get("content", "")
+            if isinstance(content, str):
+                if content == "<call_started>":
+                    continue
+                speaker = "Patient" if role == "user" else "Lily"
+                lines.append(f"{speaker}: {content}")
+            elif isinstance(content, list):
+                # Tool result blocks — skip for transcript
+                pass
+        return "\n".join(lines)
 
     # -----------------------------------------------------------------------
     # Internal: the turn loop

@@ -560,6 +560,16 @@ async def _tool_end_session(session: "ConversationSession", inp: dict) -> ToolRe
         )
         if data.follow_up_flags:
             session._follow_up_flags = data.follow_up_flags
+
+        # Claude already wrote the summary — enqueue Pinecone save directly.
+        if session.patient_id is not None:
+            from src.core.memory.summarizer import save_call_summary
+            session.enqueue(save_call_summary(
+                patient_id=session.patient_id,
+                conversation_id=session.conversation_id,
+                summary=data.summary,
+            ))
+
         log.info("session_ended", call_sid=session.call_sid, tier=data.tier_reached)
         return ToolResult(ok=True, data={"tier_reached": data.tier_reached})
     except Exception as exc:
