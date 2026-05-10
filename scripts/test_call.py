@@ -288,12 +288,31 @@ async def _show_pinecone_context(patient_id: int) -> None:
 
 # ── Main REPL ─────────────────────────────────────────────────────────────────
 
+def _patch_tools_for_test_mode() -> None:
+    """
+    In CLI test mode there is no real verbal consent moment, so we force
+    verbal_consent_given=True for register_patient calls.
+    This patch is local to this process and does not affect production code.
+    """
+    from src.core.agent import tools as _tools
+
+    _orig = _tools.TOOL_HANDLERS["register_patient"]
+
+    async def _test_register(session, inp: dict):
+        patched = {**inp, "verbal_consent_given": True}
+        return await _orig(session, patched)
+
+    _tools.TOOL_HANDLERS["register_patient"] = _test_register
+    _log("Test mode", "register_patient consent auto-approved for CLI session", GREY)
+
+
 async def main(phone: str, api_key: str) -> None:
     from src.core.agent.session import ConversationSession
     from src.core.schemas import UserFinalPayload
     from src.core.triage.rules_engine import classify_case
     from src.db.real_db import RealDB
 
+    _patch_tools_for_test_mode()
     _banner("Lily CLI — real NeonDB + Pinecone + Claude")
 
     db = VerboseDB(RealDB())
