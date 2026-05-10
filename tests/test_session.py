@@ -448,3 +448,86 @@ async def test_concurrent_user_finals_serialized_by_turn_lock():
     )
     # No crash, state is consistent
     assert s.state == SessionState.LISTENING
+
+
+# ---------------------------------------------------------------------------
+# Wiring tests — verify that implemented features are actually called.
+# These exist to catch "function built but never wired" regressions.
+# ---------------------------------------------------------------------------
+
+async def test_pinecone_summary_saved_on_call_stop(monkeypatch):
+    """on_call_stop must trigger Pinecone persistence for known patients."""
+    saved: list[dict] = []
+
+    async def mock_summarize(transcript, symptoms, vitals, tier):
+        return "Test summary: caller reported headache."
+
+    async def mock_save(patient_id, conversation_id, summary):
+        saved.append({"patient_id": patient_id, "conversation_id": conversation_id, "summary": summary})
+
+    monkeypatch.setattr("src.core.memory.summarizer.summarize_call", mock_summarize)
+    monkeypatch.setattr("src.core.memory.summarizer.save_call_summary", mock_save)
+
+    client = MockAnthropicClient()
+    client.queue_text("Hello, Maria!")
+    client.queue_text("I hear you.")
+
+    s = make_session(client)
+    await s.start("+15550001234")
+    await s.on_user_final(final_payload("I have a headache"))
+
+    await s.on_call_stop("hangup")
+
+    # Give the background task time to complete
+    await asyncio.sleep(0.1)
+
+    assert len(saved) == 1, "save_call_summary must be called once after call ends"
+    assert saved[0]["patient_id"] == 1
+    assert "headache" in saved[0]["summary"].lower() or saved[0]["summary"]
+
+
+async def test_pinecone_not_saved_for_unknown_patient(monkeypatch):
+    """Pinecone must NOT be called when patient_id is None (unregistered caller)."""
+    saved: list = []
+
+    async def mock_save(*a, **kw):
+        saved.append(True)
+
+    monkeypatch.setattr("src.core.memory.summarizer.save_call_summary", mock_save)
+
+    client = MockAnthropicClient()
+    client.queue_text("Welcome to Lily.")
+
+    db = MockDB()  # no patient seeded — unknown caller
+    s = make_session(client, db=db)
+    await s.start("+19999999999")
+    await s.on_call_stop("hangup")
+    await asyncio.sleep(0.1)
+
+    assert len(saved) == 0, "Pinecone must not be called when patient_id is None"
+
+
+async def test_pinecone_saved_via_end_session_tool(monkeypatch):
+    """When Claude calls end_session, its summary must be enqueued to Pinecone."""
+    saved: list[dict] = []
+
+    async def mock_save(patient_id, conversation_id, summary):
+        saved.append({"summary": summary})
+
+    monkeypatch.setattr("src.core.memory.summarizer.save_call_summary", mock_save)
+
+    client = MockAnthropicClient()
+    t = client.new_turn()
+    t.add_text("Goodbye!")
+    t.add_tool("end_session", {"tier_reached": "handle", "summary": "Caller had mild nausea, resolved."})
+    client.queue_text("Take care!")
+
+    s = make_session(client)
+    await s.start("+15550001234")
+    await s.on_user_final(final_payload("I feel better now, bye"))
+
+    # Drain the write queue so the enqueued Pinecone save completes
+    await s._write_queue.drain()
+
+    assert len(saved) == 1, "save_call_summary must be enqueued when end_session tool fires"
+    assert "nausea" in saved[0]["summary"]
