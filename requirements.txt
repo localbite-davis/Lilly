@@ -16,8 +16,7 @@ deepgram-sdk>=3.2.0
 websockets>=12.0                 # used directly for ElevenLabs streaming WS
 
 # ── Memory / Vector store ────────────────────────────────────────────────────
-pinecone>=3.0.0                  # Pinecone vector DB
-openai>=1.3.5                    # OpenAI embeddings for Pinecone
+pinecone>=3.0.0                  # Pinecone vector DB + native inference embeddings
 
 # ── Database ─────────────────────────────────────────────────────────────────
 SQLAlchemy>=2.0.23

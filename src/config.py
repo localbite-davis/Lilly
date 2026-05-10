@@ -35,10 +35,12 @@ class Settings(BaseSettings):
     pinecone_env: str = Field(default="us-east-1")
     pinecone_index: str = "lily-patient-memory"
 
-    # ── Embeddings (OpenAI — used only for Pinecone vectors) ─────────────────
+    # ── Embeddings (Pinecone native inference — llama-text-embed-v2) ─────────
+    pinecone_embedding_model: str = "llama-text-embed-v2"
+    pinecone_embedding_dimension: int = 1024
+
+    # ── OpenAI (optional — not required when using Pinecone native embeddings)
     openai_api_key: str = Field(default="")
-    openai_embedding_model: str = "text-embedding-3-small"
-    openai_embedding_dimension: int = 1536
 
     # ── Cache / Queue ─────────────────────────────────────────────────────────
     redis_url: str = Field(default="redis://localhost:6379/0")

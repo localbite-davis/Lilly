@@ -2,18 +2,19 @@
 Pinecone vector store for Lily's long-term patient memory.
 
 Stores call summaries, fears, preferences, and clinical notes as semantic
-vectors. Used to populate PatientContext.recent_summaries at call start.
+vectors. Uses Pinecone's native inference API (llama-text-embed-v2) so no
+OpenAI key is required.
 
 Requires:
-  PINECONE_API_KEY — from .env
-  OPENAI_API_KEY   — for text-embedding-3-small embeddings
+  PINECONE_API_KEY    — from .env
+  PINECONE_INDEX      — index name (default: lily-patient-memory)
+  PINECONE_ENV        — AWS region (default: us-east-1)
 """
 
 from __future__ import annotations
 
 import asyncio
 import time
-from functools import lru_cache
 from typing import Any
 
 import structlog
@@ -21,21 +22,28 @@ import structlog
 log = structlog.get_logger(__name__)
 
 
-def _get_pinecone_index():
-    """Lazy-initialize Pinecone index. Cached after first call."""
-    from pinecone import Pinecone, ServerlessSpec
+def _get_pinecone_client():
+    from pinecone import Pinecone
     from src.config import settings
 
     if not settings.pinecone_api_key:
         raise RuntimeError("PINECONE_API_KEY not set — cannot use vector store")
 
-    pc = Pinecone(api_key=settings.pinecone_api_key)
+    return Pinecone(api_key=settings.pinecone_api_key)
+
+
+def _get_pinecone_index():
+    """Lazy-initialize Pinecone index. Creates it if it doesn't exist."""
+    from pinecone import ServerlessSpec
+    from src.config import settings
+
+    pc = _get_pinecone_client()
     existing = [idx.name for idx in pc.list_indexes()]
 
     if settings.pinecone_index not in existing:
         pc.create_index(
             name=settings.pinecone_index,
-            dimension=settings.openai_embedding_dimension,
+            dimension=settings.pinecone_embedding_dimension,
             metric="cosine",
             spec=ServerlessSpec(cloud="aws", region=settings.pinecone_env),
         )
@@ -45,25 +53,35 @@ def _get_pinecone_index():
 
 
 def _embed(text: str) -> list[float]:
-    """Embed text using OpenAI text-embedding-3-small (sync)."""
-    from openai import OpenAI
+    """Embed text using Pinecone inference (llama-text-embed-v2)."""
     from src.config import settings
 
-    if not settings.openai_api_key:
-        raise RuntimeError("OPENAI_API_KEY not set — cannot embed text")
-
-    client = OpenAI(api_key=settings.openai_api_key)
-    response = client.embeddings.create(
-        model=settings.openai_embedding_model,
-        input=text,
+    pc = _get_pinecone_client()
+    result = pc.inference.embed(
+        model=settings.pinecone_embedding_model,
+        inputs=[text],
+        parameters={"input_type": "passage", "truncate": "END"},
     )
-    return response.data[0].embedding
+    return result[0].values
+
+
+def _embed_query(text: str) -> list[float]:
+    """Embed a query string (uses query input_type for better retrieval)."""
+    from src.config import settings
+
+    pc = _get_pinecone_client()
+    result = pc.inference.embed(
+        model=settings.pinecone_embedding_model,
+        inputs=[text],
+        parameters={"input_type": "query", "truncate": "END"},
+    )
+    return result[0].values
 
 
 class MemoryStore:
     """
-    Async-friendly wrapper over Pinecone. Embedding calls are sync (OpenAI SDK
-    doesn't have a native async client), so they run in an executor.
+    Async-friendly wrapper over Pinecone. Embedding calls are sync (Pinecone
+    inference SDK is sync), so they run in an executor.
     """
 
     def __init__(self) -> None:
@@ -114,7 +132,7 @@ class MemoryStore:
         """
         loop = asyncio.get_event_loop()
         try:
-            query_vector = await loop.run_in_executor(None, _embed, query)
+            query_vector = await loop.run_in_executor(None, _embed_query, query)
             index = self._ensure_index()
             results = await loop.run_in_executor(
                 None,
@@ -125,7 +143,11 @@ class MemoryStore:
                     include_metadata=True,
                 ),
             )
-            return [m["metadata"]["text"] for m in results.get("matches", []) if m.get("metadata", {}).get("text")]
+            return [
+                m["metadata"]["text"]
+                for m in results.get("matches", [])
+                if m.get("metadata", {}).get("text")
+            ]
         except Exception as exc:
             log.warning("memory_retrieve_failed", patient_id=patient_id, exc_info=exc)
             return []
