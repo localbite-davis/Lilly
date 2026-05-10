@@ -28,3 +28,6 @@ Thumbs.db
 logs/
 received_audio.wav
 *.wav
+
+# Local dev scripts — machine-specific, not for CI
+start_local.sh
