@@ -10,7 +10,7 @@ twilio==8.10.2
 anthropic>=0.40.0
 
 # ── Speech-to-Text ───────────────────────────────────────────────────────────
-deepgram-sdk>=3.2.0
+deepgram-sdk==3.11.0
 
 # ── Text-to-Speech ───────────────────────────────────────────────────────────
 websockets>=12.0                 # used directly for ElevenLabs streaming WS

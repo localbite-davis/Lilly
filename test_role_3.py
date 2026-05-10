@@ -45,12 +45,12 @@ def setup_test():
         db.commit()
         db.refresh(queue_item)
 
-        print("5. Creating an EXPIRED 20-minute SLA Timer...")
-        # We simulate that the 20 minutes actually passed 5 minutes ago
-        expired_time = datetime.now(timezone.utc) - timedelta(minutes=5)
+        print("5. Creating a 5-minute SLA Timer...")
+        # We simulate the 20-minute SLA having 5 minutes left
+        future_time = datetime.now(timezone.utc) + timedelta(minutes=5)
         timer = EscalationTimer(
             doctor_queue_id=queue_item.id,
-            expires_at=expired_time,
+            expires_at=future_time,
             status="pending"
         )
         db.add(timer)
