@@ -1,59 +1,373 @@
-# Lily 🌸
-**The accessible, voice-first maternal health companion for maternity deserts.**
+# Lily
+**The voice-first maternal health companion for maternity deserts.**
 
-Lily is a phone number. No app. No smartphone. No data plan. No English required. Any pregnant woman or new mother can call Lily to receive empathetic support, plain-language education, and immediate triage grounded in clinical guidelines. 
+Lily is a phone number. No app. No smartphone. No data plan. No English required.
 
-When a caller reports symptoms, Lily doesn't just guess—she routes them through a deterministic rules engine built on the American College of Obstetricians and Gynecologists (ACOG) Urgent Maternal Warning Signs. If a doctor is needed, Lily loops one in. If it’s an emergency, Lily conferences 911 and stays on the line.
+Any pregnant woman or new mother can call Lily to receive empathetic support, plain-language education, and immediate triage grounded in clinical guidelines. When a caller reports symptoms, Lily routes them through a deterministic rules engine built on the ACOG Urgent Maternal Warning Signs. If a physician is needed, Lily notifies one. If it's a life-threatening emergency, Lily activates emergency services and stays on the line.
+
+> *Built for HackDavis 2026. Because geography should not determine survival.*
 
 ---
 
-## 🛠 Tech Stack
-Lily is built for extreme low-latency and maximum accessibility over standard phone lines (PSTN):
-- **Telephony & SMS**: Twilio (Voice WebSockets, SMS, Conferencing)
-- **Speech-to-Text**: Deepgram (sub-second streaming transcription)
-- **The Brain (LLM)**: Anthropic Claude Sonnet 4.6 (Tool-calling, reasoning, empathy)
-- **Text-to-Speech**: ElevenLabs (Ultra-low latency human-like voice)
-- **Rules Engine**: Pure Python (Deterministic ACOG logic, bypassing LLM hallucinations)
-- **Memory**: Pinecone (Vector embeddings for long-term patient context)
-- **Database**: PostgreSQL / SQLite (Patient records, session vitals, standing orders)
-- **Backend Framework**: Python FastAPI
+## The Problem
 
-## 🚀 Architecture Overview
-The system relies on a strict separation of concerns between **Conversation** and **Triage**:
-1. **The LLM** extracts symptoms from the conversation (e.g., `["headache", "systolic_bp: 148"]`).
-2. **The Rules Engine** evaluates the symptoms deterministically, ensuring that medical escalations are safe, auditable, and not subject to AI hallucination.
-3. Cases are categorized into three tiers:
-   - **HANDLE**: Lily resolves the issue through education and comfort.
-   - **HAND-UP**: A volunteer physician is pinged via a dashboard and has 20 minutes to respond.
-   - **HAND-OFF**: A severe emergency requiring an immediate 3-way call to 911/L&D.
+800 women die every day from preventable pregnancy complications. 80% of maternal deaths are preventable with timely care. In the U.S. alone, over 35% of counties are obstetric deserts — no OB within 30 miles. The women most at risk are the least likely to have a smartphone, reliable internet, or a doctor they can call at 2 a.m.
 
-## 💻 Getting Started (Hackathon Setup)
+Lily's entire interface is a phone call. That is the most accessible technology in the world.
 
-### 1. Install Dependencies
+---
+
+## How It Works
+
+```
+Patient calls Lily's number
+         │
+         ▼
+Twilio ingests audio → WebSocket stream
+         │
+         ▼
+ElevenLabs Scribe transcribes (with WebRTC VAD)
+         │
+         ▼
+Claude (claude-sonnet-4-6) runs the conversation
+    • Extracts symptoms and vitals via tool calls
+    • Calls the ACOG rules engine to classify the case
+    • Personalizes using patient history from Pinecone + PostgreSQL
+         │
+    ┌────┴────┐
+    ▼         ▼
+HANDLE    HAND_UP / HAND_OFF
+    │         │
+    │         ▼
+    │   Doctor Queue (dashboard)
+    │   + EscalationTimer (20 min SLA)
+    │         │
+    │   Doctor approves or escalates
+    │         │
+    │   Lily calls the patient back
+    ▼         ▼
+ElevenLabs TTS → Twilio → caller's phone
+```
+
+---
+
+## Architecture
+
+### Three Layers
+
+**Layer 1 — Telephony (Twilio + ElevenLabs)**
+Handles all audio I/O. Twilio streams raw 8kHz μ-law audio over WebSocket. The STT module buffers it, runs WebRTC VAD to detect speech, and flushes to ElevenLabs Scribe for transcription. Outbound audio uses ElevenLabs TTS over a persistent stream, with echo suppression via a mute/unmute gate.
+
+**Layer 2 — The Brain (Claude + Rules Engine)**
+`ConversationSession` manages all state for one call. Each user transcript triggers a brain turn: Claude streams a response or invokes one or more tools. Tool results feed back into the conversation. The ACOG rules engine is a separate deterministic module — Claude calls it as a tool, and its output is binding. Claude cannot override a triage decision.
+
+**Layer 3 — Clinical Backend (Doctor Portal + Workers)**
+When a HAND_UP case is created, a row is written to `doctor_queue` and an `EscalationTimer` starts (20 minutes). The doctor dashboard polls the queue, shows real vitals and a concise SBAR question, and lets the doctor approve or escalate. On decision, Lily calls the patient back using ElevenLabs voice. If no doctor acts in time, the case auto-escalates.
+
+---
+
+## Triage Tiers
+
+All triage is deterministic. The LLM extracts symptoms; the ACOG rules engine classifies them. The LLM cannot invent or override a classification.
+
+| Tier | Trigger | Lily's Action | SLA |
+|------|---------|---------------|-----|
+| **HANDLE** | No ACOG warning signs | Supportive conversation, education, follow-up flags | None |
+| **HAND_UP** | ≥1 ACOG warning sign (BP ≥140/90, severe headache, vision changes, decreased fetal movement, fever, edema, abnormal discharge, preterm signs) | Notify doctor queue, SMS patient, close warmly — doctor calls/texts back ASAP | 20 minutes |
+| **HAND_OFF** | Emergency (BP ≥160/110, heavy bleeding, seizures, chest pain, SOB, extreme pain) | Activate emergency services, stay on line, notify emergency contact | Immediate |
+
+---
+
+## Components
+
+### STT — `src/services/stt_elevenlabs.py`
+- WebRTC VAD (aggressiveness 1) distinguishes speech from background noise on 8kHz phone audio
+- Silence gate: 35 consecutive non-speech frames (~700ms) triggers a flush to ElevenLabs Scribe
+- Force-flush at 96KB to prevent stale audio accumulation
+- Language detected on first transcript; STT then pins to that language to prevent wrong-script misfires (e.g., Punjabi/Bengali for English speech on low-quality lines)
+- Non-speech annotation filter: discards `(footsteps)`, `(static)`, `(beatboxing)`, etc.
+- Echo suppression: `start_mute()` when TTS opens → `end_mute(duration + 2.5s)` on close
+
+### TTS — ElevenLabs Flash v2.5
+- Persistent streaming connection per call turn for minimal time-to-first-byte
+- Text chunked at sentence boundaries (20–80 chars) before feeding to TTS
+- `/tts-audio` REST endpoint for Twilio `<Play>` callbacks (doctor decision call-backs to patient)
+
+### Brain — `src/core/agent/`
+
+| File | Role |
+|------|------|
+| `session.py` | `ConversationSession` — full call state machine, turn lock, tool dispatch, barge-in handling |
+| `brain.py` | `stream_turn()` — Anthropic streaming with exponential backoff, retry, and fallback model |
+| `real_client.py` | Anthropic SDK adapter, normalizes raw stream events to typed objects |
+| `tools.py` | All 12 tool handlers + `TOOL_DEFINITIONS` schema for Claude |
+| `prompts.py` | System prompt (static ~2000 tokens, Anthropic prompt-cached) + dynamic patient context builder |
+| `tts_bridge.py` | `TextChunker` — splits LLM text stream into TTS-safe chunks at punctuation boundaries |
+
+### Agent Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_patient_context` | Re-fetch patient record from DB mid-call (e.g., after registration) |
+| `register_patient` | Register new caller — requires `verbal_consent_given=true` |
+| `log_symptom` | Record a single symptom to the session and DB immediately when mentioned |
+| `log_vitals` | Record BP, HR, or SpO₂ from self-report, SMS wearable, or device |
+| `read_vitals_sms` | Retrieve latest vitals sent via SMS from a wearable device |
+| `classify_case` | Call the ACOG deterministic rules engine — result is binding on the conversation |
+| `request_doctor_review` | Push HAND_UP case to doctor queue with concise SBAR question |
+| `send_patient_sms` | Send SMS to patient's phone number on file |
+| `send_emergency_contact_sms` | Alert emergency contact (HAND_OFF only) |
+| `update_follow_up_flags` | Set per-symptom reminders that surface on the next call |
+| `end_session` | Close the call, persist tier + summary + follow-up flags |
+| `get_education_content` | Retrieve evidence-based maternal health guidance snippet |
+
+### Rules Engine — `src/core/triage/rules_engine.py`
+Pure Python. No LLM inference in the triage path. `classify_case()` takes a list of symptom strings and a vitals dict, derives additional BP-threshold symptoms, and returns the highest triggered ACOG tier.
+
+```python
+ACOG_WARNING_SIGNS = {
+    # HAND_OFF — immediate emergency
+    "heavy_vaginal_bleeding":           HAND_OFF,
+    "seizures":                         HAND_OFF,
+    "chest_pain":                       HAND_OFF,
+    "shortness_of_breath":              HAND_OFF,
+    "systolic_bp_over_160":             HAND_OFF,
+    "diastolic_bp_over_110":            HAND_OFF,
+    "unable_to_self_transport_emergency": HAND_OFF,
+    # HAND_UP — physician review within 20 min
+    "severe_headache_not_going_away":   HAND_UP,
+    "changes_in_vision":                HAND_UP,
+    "decreased_fetal_movement":         HAND_UP,
+    "systolic_bp_over_140":             HAND_UP,
+    "diastolic_bp_over_90":             HAND_UP,
+    "fever_over_100_4":                 HAND_UP,
+    "edema_hands":                      HAND_UP,
+    "vaginal_bleeding":                 HAND_UP,
+    "preterm_labor_signs":              HAND_UP,
+    # ... 20+ signs total
+}
+```
+
+### Doctor Portal — `src/api/routes/doctor_portal.py` + `dashboard-react/`
+- React 19 + Vite + Tailwind SPA, served from FastAPI's `StaticFiles` at `/`
+- Real-time queue (15s auto-poll): patient name, gestational stage, tier badge, actual vitals parsed from DB, symptom chips, SBAR question, SLA countdown timer
+- Timer turns red below 5 minutes; shows **EXPIRED** when SLA breached
+- Actions: **Authorize Care Plan** (resolve) → Lily calls patient back; **Immediate Escalation** → 911; **Add Clinical Note**
+- Resolution History with status badges (resolved / escalated / auto-escalated)
+- Standing Orders: doctor-authored conditional care plans, patient dropdown fetched from `/api/portal/patients`
+- Clinical Analytics: Lily operational impact + global maternal health crisis context
+
+### Database — `src/db/models/`
+
+| Table | Purpose |
+|-------|---------|
+| `patients` | Demographics, gestational stage, device flags (BP cuff, wearable), language, emergency contact |
+| `conversations` | One row per call — tier reached, summary, timestamps |
+| `vitals` | Time-series vitals with source annotation (self_report / sms_vitals / wearable) |
+| `symptom_log` | Per-symptom log with call reference |
+| `doctor_queue` | Pending/resolved cases for the doctor dashboard |
+| `escalation_timers` | SLA 20-minute countdown per queue item |
+| `standing_orders` | Doctor-written conditional orders (if X, do Y) |
+| `follow_up_flags` | Cross-call reminders surfaced on the next conversation |
+| `doctor_reviews` | Full CasePacket JSON for audit trail |
+| `audit_log` | Actor/action ledger (lily / doctor / system) |
+| `sms_log` | Outbound SMS history |
+
+### Memory & RAG — `src/core/memory/`
+- **Pinecone** (llama-text-embed-v2, 1024-dim) — per-patient semantic memory across calls; fears, preferences, clinical history
+- **ChromaDB** (local) — knowledge base retrieval from ACOG guidelines, MedlinePlus, clinical PDFs
+- Post-call: Claude Haiku generates a 2–3 sentence summary → saved to PostgreSQL + Pinecone
+- Pre-turn RAG: `rag_for_turn()` classifies the user message (clinical / navigational / emotional) and injects retrieved chunks as a system prompt block if relevant; skipped for smalltalk to save ~150ms
+
+### Multilingual Support
+- English (`en`) and Spanish (`es`) supported
+- Language detected from first transcript; STT pins to that language for the rest of the call
+- Full Spanish system prompt when `language == "es"`, including translated ACOG directives and tone calibration
+- Separate ElevenLabs voice ID configurable for Spanish
+
+---
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/twilio/voice/incoming` | Inbound call webhook — returns TwiML with WebSocket URL |
+| `WS` | `/api/twilio/voice/stream` | Bidirectional audio stream (Twilio ↔ Lily) |
+| `GET` | `/api/twilio/voice/tts-audio` | ElevenLabs TTS REST endpoint for `<Play>` callbacks |
+| `POST` | `/api/twilio/voice/decision/{type}` | TwiML for doctor decision call-backs to patient |
+| `POST` | `/api/twilio/sms/webhook` | Inbound SMS (vitals from wearable devices) |
+| `GET` | `/api/portal/queue` | Pending HAND_UP cases with SLA timers and real vitals |
+| `POST` | `/api/portal/cases/{id}/{action}` | Doctor action: `approve`, `escalate`, `note` |
+| `GET` | `/api/portal/past` | Resolved/escalated case history |
+| `GET` | `/api/portal/patients` | All patients (for dropdowns) |
+| `GET` | `/api/portal/standing-orders` | All active standing orders |
+| `POST` | `/api/portal/standing-orders` | Create new standing order |
+| `GET` | `/api/portal/analytics` | Dashboard metrics |
+| `GET` | `/health` | Health check |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Telephony | Twilio Voice WebSockets, SMS |
+| Speech-to-Text | ElevenLabs Scribe + WebRTC VAD |
+| LLM | Anthropic Claude Sonnet 4.6 (primary), Claude Haiku 4.5 (fallback + summarizer) |
+| Text-to-Speech | ElevenLabs Flash v2.5 |
+| Rules Engine | Pure Python (deterministic ACOG logic) |
+| Long-term Memory | Pinecone (native inference embeddings, llama-text-embed-v2) |
+| Knowledge Base | ChromaDB (local vector store, ACOG + MedlinePlus) |
+| Database | PostgreSQL / NeonDB (production), SQLite (local dev) |
+| ORM | SQLAlchemy 2.0 async |
+| Backend | FastAPI + Uvicorn |
+| Frontend | React 19 + Vite + Tailwind CSS + Framer Motion |
+| Task Queue | Celery + Redis |
+| Structured Logging | structlog |
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Python 3.11+
+- conda (recommended) or virtualenv
+- Node.js 18+ (for dashboard changes only)
+- Accounts: Twilio, Anthropic, ElevenLabs, Pinecone
+
+### 1. Clone and create environment
+
 ```bash
+git clone https://github.com/localbite-davis/Lilly.git
+cd Lilly
+
+conda create -n lily python=3.11
+conda activate lily
 pip install -r requirements.txt
 ```
 
-### 2. Environment Variables
-Copy `.env.example` to `.env` and fill in your keys:
-```env
-TWILIO_ACCOUNT_SID=
-TWILIO_AUTH_TOKEN=
-ANTHROPIC_API_KEY=
-DEEPGRAM_API_KEY=
-ELEVENLABS_API_KEY=
+### 2. Configure environment
+
+```bash
+cp .env.example .env
+# Fill in your keys (see Environment Variables below)
 ```
 
-### 3. Run the Database
+### 3. Start the server
+
 ```bash
-docker-compose up -d
+bash start_local.sh
 ```
 
-### 4. Start the Application
+This single command:
+1. Verifies the `lily` conda env and required `.env` keys
+2. Initialises the database tables
+3. Starts FastAPI on `http://localhost:8000` with hot reload
+4. Starts a Cloudflare tunnel (no account needed) and polls until the public URL appears
+5. Prints the exact Twilio webhook URL to paste into the console
+
+### 4. Configure Twilio webhook
+
+In [Twilio Console](https://console.twilio.com) → Phone Numbers → your number → Voice:
+- **A call comes in** → Webhook → `https://<your-tunnel>.trycloudflare.com/api/twilio/voice/incoming`
+
+### 5. Seed demo data (optional)
+
 ```bash
-uvicorn src.main:app --reload --port 8000
+python scripts/seed_demo_data.py --wipe
 ```
-*(For Twilio to reach your local server, expose port 8000 using ngrok)*
+
+Populates the database with 5 realistic patients, 3 pending queue cases (with real vitals and SBAR questions), 3 resolved cases, and 3 standing orders so the doctor dashboard looks populated immediately.
+
+### 6. Open the doctor dashboard
+
+[http://localhost:8000](http://localhost:8000)
 
 ---
-*Built for HackDavis 2026. Because geography should not determine survival.*
+
+## Project Structure
+
+```
+Lilly/
+├── src/
+│   ├── main.py                    # FastAPI app, route registration, StaticFiles mount
+│   ├── config.py                  # All settings via pydantic-settings
+│   ├── api/
+│   │   └── routes/
+│   │       ├── twilio_voice.py    # WebSocket handler: STT → Brain → TTS pipeline
+│   │       ├── twilio_sms.py      # Inbound SMS (wearable vitals)
+│   │       └── doctor_portal.py   # Doctor dashboard REST API
+│   ├── core/
+│   │   ├── agent/
+│   │   │   ├── session.py         # ConversationSession state machine
+│   │   │   ├── brain.py           # Anthropic streaming with retry/fallback
+│   │   │   ├── real_client.py     # Anthropic SDK adapter
+│   │   │   ├── tools.py           # All tool handlers + TOOL_DEFINITIONS
+│   │   │   ├── prompts.py         # System prompts (EN + ES), context builder
+│   │   │   └── tts_bridge.py      # Text chunker for streaming TTS
+│   │   ├── triage/
+│   │   │   └── rules_engine.py    # Deterministic ACOG classify_case()
+│   │   ├── memory/
+│   │   │   ├── vector_store.py    # Pinecone read/write
+│   │   │   └── summarizer.py      # Post-call summary via Claude Haiku
+│   │   └── schemas.py             # Pydantic models (CasePacket, TriageOutput, etc.)
+│   ├── db/
+│   │   ├── models/                # SQLAlchemy ORM models (11 tables)
+│   │   ├── real_db.py             # Async DB adapter (all queries in one place)
+│   │   ├── session.py             # Async session factory
+│   │   └── init_db.py             # Table creation on startup
+│   └── services/
+│       ├── stt_elevenlabs.py      # ElevenLabs STT + WebRTC VAD + echo suppression
+│       └── telephony.py           # Twilio outbound calls, SMS, decision callbacks
+├── dashboard-react/
+│   ├── src/App.jsx                # Single-page app (queue, history, orders, analytics)
+│   ├── dist/                      # Built output served by FastAPI
+│   └── vite.config.cjs            # Vite config with /api proxy for dev server
+├── knowledge_base/
+│   └── retrieve.py                # ChromaDB RAG retrieval + turn classifier
+├── scripts/
+│   ├── seed_demo_data.py          # Populate DB with demo patients and cases
+│   └── test_doctor_queue.py       # End-to-end doctor queue pipeline test
+├── tests/                         # pytest suite
+├── start_local.sh                 # One-command local dev startup (server + tunnel)
+└── requirements.txt
+```
+
+---
+
+## Safety Design
+
+**Deterministic triage** — triage decisions are made by pure Python logic, not LLM inference. Claude provides extracted symptoms; the rules engine decides tier. Claude cannot downgrade a classification or bypass an escalation.
+
+**SLA enforcement** — HAND_UP cases that go unreviewed for 20 minutes are auto-escalated by a background timer, independent of any human action.
+
+**Prefill guard** — user messages are buffered and applied to conversation history inside a turn lock, preventing the race where two simultaneous transcripts produce `[user, user, assistant]` history and trigger a 400 error from the Anthropic API.
+
+**Handoff text suppression** — during HAND_OFF mode, any LLM output matching reassurance patterns ("you'll be fine", "probably nothing") is suppressed and replaced with: *"I'm staying with you. Help is on the way."*
+
+**PHI redaction** — structured logs redact phone numbers; call summaries strip patient names before saving to Pinecone.
+
+**Consent gate** — `register_patient` requires `verbal_consent_given=true`. Lily cannot register a caller without explicit verbal consent on the call.
+
+---
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `ANTHROPIC_API_KEY` | Yes | — | Claude API key |
+| `ELEVENLABS_API_KEY` | Yes | — | ElevenLabs TTS/STT key |
+| `TWILIO_ACCOUNT_SID` | Yes | — | Twilio account SID |
+| `TWILIO_AUTH_TOKEN` | Yes | — | Twilio auth token |
+| `TWILIO_PHONE_NUMBER` | Yes | — | Twilio number in E.164 format |
+| `PINECONE_API_KEY` | Yes | — | Pinecone vector DB key |
+| `DATABASE_URL` | No | `sqlite+aiosqlite:///./lily_dev.db` | PostgreSQL or SQLite URL |
+| `LILY_MODEL` | No | `claude-sonnet-4-6` | Primary LLM model ID |
+| `LILY_MODEL_FALLBACK` | No | `claude-haiku-4-5-20251001` | Fallback on retries |
+| `LILY_VOICE_ID` | No | `EXAVITQu4vr4xnSDxMaL` | ElevenLabs voice (English) |
+| `LILY_VOICE_ID_ES` | No | — | ElevenLabs voice (Spanish) |
+| `DEFAULT_LANGUAGE` | No | `en` | Default conversation language |
+| `SUPPORTED_LANGUAGES` | No | `en,es` | Comma-separated language codes |
+| `LOG_LEVEL` | No | `INFO` | Logging verbosity |
+| `PHI_REDACTION` | No | `on` | Redact PHI in structured logs |
+| `ENVIRONMENT` | No | `dev` | `dev` / `staging` / `prod` |
