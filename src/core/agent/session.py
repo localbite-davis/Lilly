@@ -314,7 +314,7 @@ class ConversationSession:
             loop_start = time.monotonic()
             try:
                 voice_id = (
-                    settings.lily_voice_id_es
+                    settings.lily_voice_id_es or settings.lily_voice_id
                     if self._language == "es"
                     else settings.lily_voice_id
                 )
