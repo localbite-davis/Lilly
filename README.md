@@ -1,4 +1,4 @@
-![Lily — Voice-First Maternal Health](WhatsApp%20Image%202026-05-10%20at%2010.39.26.jpeg)
+![Lily — Voice-First Maternal Health](images/Lily%20Image.jpeg)
 
 # Lily
 **The voice-first maternal health companion for maternity deserts.**
@@ -285,7 +285,7 @@ cp .env.example .env
 ### 3. Start the server
 
 ```bash
-bash start_local.sh
+bash scripts/start_local.sh
 ```
 
 This single command:
@@ -311,6 +311,87 @@ Populates the database with 5 realistic patients, 3 pending queue cases (with re
 ### 6. Open the doctor dashboard
 
 [http://localhost:8000](http://localhost:8000)
+
+---
+
+## Using the Application
+
+### Making a Call as a Patient
+
+1. Call the Twilio phone number you configured in the console.
+2. If you're a **returning patient**, Lily greets you by name and loads your history automatically.
+3. If you're a **new caller**, Lily introduces herself and walks you through a conversational registration (name, due date, emergency contact, whether you have a BP cuff). No forms, no app.
+4. Describe what's going on. Lily asks follow-up questions naturally.
+5. If you have a **home BP cuff**, Lily will ask you to take a reading and wait on the line.
+6. Lily classifies your case via the ACOG rules engine and takes action:
+   - **HANDLE** — Lily provides guidance, education, or coaching and closes the call warmly.
+   - **HAND_UP** — Lily tells you a doctor will review your case within 20 minutes, ends the call, and sends you an SMS confirmation. Lily calls you back once the doctor responds.
+   - **HAND_OFF** — Lily stays on the line, initiates a 911 conference call, and contacts your emergency contact via SMS.
+
+### Sending Wearable Vitals via SMS
+
+If a patient has a wearable device (heart rate monitor, pulse oximeter), vitals can be pushed to Lily mid-call via SMS to the Twilio number in this format:
+
+```
+HR:88 SpO2:97 ts:1715286000
+```
+
+or with blood pressure:
+
+```
+HR:88 SpO2:97 BP:148/94 ts:1715286000
+```
+
+Lily detects the vitals during the active call and incorporates them into the triage decision automatically. During a demo, a teammate can send this SMS manually mid-call to simulate a wearable sync.
+
+### Using the Doctor Dashboard
+
+Open [http://localhost:8000](http://localhost:8000) in a browser while the server is running.
+
+**Queue tab** — shows all pending HAND_UP cases in real time (auto-refreshes every 15 seconds). Each card shows:
+- Patient name and gestational stage
+- Blood pressure, heart rate, SpO₂ (parsed from the call)
+- Symptom chips
+- Lily's SBAR question for the doctor
+- SLA countdown timer (turns red under 5 minutes, shows **EXPIRED** when breached)
+
+Three actions per case:
+| Button | What it does |
+|---|---|
+| **Authorize Care Plan** | Marks the case resolved — Lily calls the patient back with approval |
+| **Immediate Escalation** | Escalates to emergency services — Lily calls the patient back with ER instructions |
+| **Add Clinical Note** | Attach a free-text note to the case record |
+
+**History tab** — resolved and escalated cases with status badges.
+
+**Standing Orders tab** — write patient-specific conditional protocols (e.g. *"If nausea in first trimester, patient may take B6 25mg"*). Lily surfaces these mid-call when relevant.
+
+**Analytics tab** — operational metrics (cases resolved, avg response time, triage accuracy) alongside global maternal health context.
+
+### Running a Local Chat Session *(no phone needed)*
+
+To test Lily's conversation logic without making a real call:
+
+```bash
+conda activate lily
+python tests/cli_chat.py
+```
+
+This runs the full brain pipeline in the terminal — system prompt, tool calls, and all — with no Twilio or audio involved. Useful for testing prompt changes and tool behavior.
+
+### Seeding Demo Data
+
+```bash
+python tests/seed_demo_data.py --wipe
+```
+
+Wipes the database and populates it with 5 realistic patients, 3 pending HAND_UP cases with real vitals and SBAR questions, 3 resolved/escalated cases, and 3 standing orders. Run this before a demo so the dashboard looks live from the first second.
+
+To add data without wiping:
+
+```bash
+python tests/seed_demo_data.py
+```
 
 ---
 
@@ -355,10 +436,14 @@ Lilly/
 ├── knowledge_base/
 │   └── retrieve.py                # ChromaDB RAG retrieval + turn classifier
 ├── scripts/
+│   ├── setup.sh                   # One-shot environment setup (venv + deps + .env)
+│   ├── start.sh                   # Start all services (Docker + FastAPI + Celery + ngrok)
+│   └── start_local.sh             # Local dev startup (conda + server + Cloudflare tunnel)
+├── tests/                         # pytest suite + dev scripts
 │   ├── seed_demo_data.py          # Populate DB with demo patients and cases
-│   └── test_doctor_queue.py       # End-to-end doctor queue pipeline test
-├── tests/                         # pytest suite
-├── start_local.sh                 # One-command local dev startup (server + tunnel)
+│   ├── test_doctor_queue.py       # End-to-end doctor queue pipeline test
+│   ├── cli_chat.py                # CLI chat harness for local testing
+│   └── test_call.py               # Call simulation script
 └── requirements.txt
 ```
 

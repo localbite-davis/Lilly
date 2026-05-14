@@ -1,23 +1,97 @@
-# Environments
+# ── Secrets & credentials ─────────────────────────────────────────────────────
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+credentials.json
+secrets.json
+service_account*.json
+*_secret*.json
 
-# Python
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+MANIFEST
+.python-version
+__pypackages__/
 
-# Database
+# ── Virtual environments ───────────────────────────────────────────────────────
+.venv
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+
+# ── Test & coverage ────────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+nosetests.xml
+
+# ── Type checker / linter caches ──────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+.pytype/
+
+# ── Database & local data ──────────────────────────────────────────────────────
 *.sqlite3
 *.db
+lily_dev.db
+lily_local.db
 
-# OS generated files
+# ── Vector stores (local ChromaDB data, embedding caches) ─────────────────────
+chroma_db/
+.chroma/
+chromadb/
+pinecone_cache/
+*.pkl
+*.pickle
+
+# ── Audio files ───────────────────────────────────────────────────────────────
+*.wav
+*.mp3
+*.ogg
+*.flac
+received_audio.wav
+received_audio/
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+
+# ── Node.js / frontend ────────────────────────────────────────────────────────
+node_modules/
+dashboard-react/node_modules/
+dashboard-react/dist/
+dist/
+build/
+.npm/
+.yarn/
+*.tsbuildinfo
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── OS generated ──────────────────────────────────────────────────────────────
 .DS_Store
 .DS_Store?
 ._*
@@ -25,19 +99,12 @@ __pycache__/
 .Trashes
 ehthumbs.db
 Thumbs.db
-logs/
-received_audio.wav
-*.wav
-# Node.js
-node_modules/
-dist/
-dashboard-react/node_modules/
-dashboard-react/dist/
+desktop.ini
 
-
-node_modules/
-dist/
-build/
-*.log
+# ── Temp / misc ───────────────────────────────────────────────────────────────
 *.tmp
 *.bak
+*.swp
+*.swo
+*~
+.cache/
